@@ -9,8 +9,9 @@
 		xmlns:material="using:Material.Icons.Avalonia"
         mc:Ignorable="d"
         x:Class="PraktikaDesktop.Views.MainWindow"
-        Title="PraktikaDesktop"
-        WindowStartupLocation="CenterScreen" Height="700" Width="1300"
+        Title="PraktikaDesktop" x:Name="mainWindow"
+        WindowStartupLocation="CenterScreen"
+		MinHeight="700" MinWidth="1300" Height="700" Width="1300"
 		Background="{StaticResource primaryBackColor1}">
 	
 	<Window.DataContext>
@@ -20,12 +21,6 @@
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
-	<Window.Resources>
-		<DataTemplate DataType="{x:Type	vdialog:BaseDialogView}">
-			<vmdialog:BaseDialogViewModel/>
-		</DataTemplate>
-	</Window.Resources>
 
 	<Grid>
 		<Grid.ColumnDefinitions>

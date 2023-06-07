@@ -21,10 +21,6 @@ namespace PraktikaDesktop.ViewModels
         private string _caption;
         private string _icon;
 
-        private ViewModelBase? _dialogView;
-        private bool _mainEnable = true;
-        private bool _dimmingEffectEnable = false;
-
         //Properties
         private Employee LoginEmployee
         {
@@ -40,31 +36,6 @@ namespace PraktikaDesktop.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref _currentChildView, value);
-            }
-        }
-
-        public ViewModelBase? DialogView
-        {
-            get => _dialogView;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _dialogView, value);
-            }
-        }
-        public bool MainEnable
-        {
-            get => _mainEnable;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _mainEnable, value);
-            }
-        }
-        public bool DimmingEffectEnable
-        {
-            get => _dimmingEffectEnable;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _dimmingEffectEnable, value);
             }
         }
 
@@ -97,9 +68,11 @@ namespace PraktikaDesktop.ViewModels
         }
         public void ShowSupplyViewCommand()
         {
+            SupplyViewModel viewModel = new SupplyViewModel();
+            CurrentChildView = viewModel;
+
             Caption = "Поставки";
             Icon = "Truck";
-
         }
         public void ShowOrderViewCommand()
         {
@@ -133,7 +106,10 @@ namespace PraktikaDesktop.ViewModels
             Caption = "Сотрудники";
             Icon = "Users";
 
-            bool result = await ShowDialog(null);
+            ConfirmationDialogViewModel viewModel = new ConfirmationDialogViewModel(this);
+            bool result = await ShowDialog(viewModel);
+            if(result)
+                result = false;
         }
 
         //Constructor
@@ -150,11 +126,43 @@ namespace PraktikaDesktop.ViewModels
             LoginEmployee = _response.Content.ReadAsAsync<Employee>().Result;
         }
 
-        //Dialog
+        #region Dialog
+        //Fields
+        private ViewModelBase? _dialogView;
+        private bool _mainEnable = true;
+        private bool _dimmingEffectEnable = false;
+
+        //Properties
+        public ViewModelBase? DialogView
+        {
+            get => _dialogView;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _dialogView, value);
+            }
+        }
+        public bool MainEnable
+        {
+            get => _mainEnable;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _mainEnable, value);
+            }
+        }
+        public bool DimmingEffectEnable
+        {
+            get => _dimmingEffectEnable;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _dimmingEffectEnable, value);
+            }
+        }
+
         public delegate void CloseDialogDelegate();
         public event CloseDialogDelegate CloseDialogEvent;
         public bool DialogResult;
 
+        //Methods
         public Task<bool> ShowDialog(ViewModelBase currentDialogView)
         {
             BaseDialogViewModel baseDialogViewModel = new(currentDialogView);
@@ -176,5 +184,6 @@ namespace PraktikaDesktop.ViewModels
 
             CloseDialogEvent?.Invoke();
         }
+        #endregion Dialog
     }
 }

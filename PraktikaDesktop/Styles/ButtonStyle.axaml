@@ -37,6 +37,32 @@
 		<Setter Property="Background" Value="#3A9095"/>
 	</Style>
 
+	<!--Rounded button-->
+	<Style Selector="Button.Rounded">
+		<Setter Property="Background" Value="#10797F"/>
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="CornerRadius" Value="20"/>
+		<Setter Property="FontSize" Value="16"/>
+		<Setter Property="Width" Value="150"/>
+		<Setter Property="Height" Value="40"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"
+							CornerRadius="{TemplateBinding CornerRadius}"
+							Background="{TemplateBinding Background}">
+						<ContentPresenter VerticalAlignment="Center"
+										  HorizontalAlignment="Center"
+										  Content="{TemplateBinding Content}"/>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	
+	<Style Selector="Button.Rounded:pointerover">
+		<Setter Property="Background" Value="#3A9095"/>
+	</Style>
 
 	<!--Icon button-->
 	<Style Selector="Button.Icon">

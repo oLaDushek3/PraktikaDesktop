@@ -2,7 +2,9 @@
 using PraktikaDesktop.Implementation;
 using PraktikaDesktop.Interface;
 using ReactiveUI;
+using System;
 using System.Net.Http;
+using System.Reactive;
 using System.Security.Principal;
 using System.Threading;
 
@@ -13,11 +15,11 @@ namespace PraktikaDesktop.ViewModels
         //Fields
         private IWindowService? _windowService;
 
-        private string? _login;
-        private string? _password;
+        private string _login = "";
+        private string _password = "";
         private string? _errorMessage;
         //Properties
-        public string? Login
+        public string Login
         {
             get => _login;
             set
@@ -25,7 +27,7 @@ namespace PraktikaDesktop.ViewModels
                 this.RaiseAndSetIfChanged(ref _login, value);
             }
         }
-        public string? Password
+        public string Password
         {
             get => _password;
             set => this.RaiseAndSetIfChanged(ref _password, value);

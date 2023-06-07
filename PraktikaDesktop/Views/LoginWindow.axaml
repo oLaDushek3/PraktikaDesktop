@@ -6,7 +6,8 @@
         mc:Ignorable="d"
         x:Class="PraktikaDesktop.Views.LoginWindow"
 		xmlns:viewmodels="clr-namespace:PraktikaDesktop.ViewModels"
-        Title="Login" Height="600" Width="900"
+        Title="Login" 
+		Height="600" Width="900" MinHeight="600" MinWidth="900"
         WindowStartupLocation="CenterScreen"
 		x:Name="loginWindow">
 
@@ -52,36 +53,15 @@
 					   Margin="0 5"
 					   TextWrapping="Wrap"
 					   Foreground="Red"
-					   TextAlignment="Center"/>
+					   TextAlignment="Center" 
+					   Text="{Binding ErrorMessage}"/>
 
-			<Button FontSize="16" Background="#10797F"
-					Cursor="Hand" Content="Войти"
+			<Button Classes="Rounded" 
+					Content="Войти"
 					Margin="0 25" HorizontalAlignment="Center"
 					IsDefault="True"
 					Command="{Binding LoginCommand}"
 					CommandParameter="{Binding ElementName=loginWindow}">
-
-				<Button.Template>
-					<ControlTemplate TargetType="Button">
-						<Border Width="150" Height="40"
-								CornerRadius="20"
-								Background="{TemplateBinding Background}">
-							<ContentPresenter VerticalAlignment="Center"
-											  HorizontalAlignment="Center"
-											  Content="{TemplateBinding Content}"/>
-
-							<Border.Styles>
-								<Style Selector="Border">
-									<Setter Property="Background" Value="#10797F" />
-								</Style>
-								<Style Selector="Border:pointerover">
-									<Setter Property="Background" Value="#3A9095" />
-								</Style>
-							</Border.Styles>
-
-						</Border>
-					</ControlTemplate>
-				</Button.Template>
 			</Button>
 
 		</StackPanel>
