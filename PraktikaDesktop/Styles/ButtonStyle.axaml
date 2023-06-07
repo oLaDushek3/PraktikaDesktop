@@ -1,0 +1,70 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	
+	<!--Menu button-->
+	<Style Selector="RadioButton.Menu">
+		<Setter Property="Height" Value="50"/>
+		<Setter Property="Margin" Value="-5,0,0,5"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="BorderBrush" Value="#266063"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="RadioButton">
+					<Border Background="{TemplateBinding Background}"
+                            BorderThickness="4,0,0,0"
+                            BorderBrush="{TemplateBinding BorderBrush}">
+						<ContentPresenter Name="PART_ContentPresenter"
+										  VerticalAlignment="Center"
+										  HorizontalAlignment="Left"
+										  Margin="15 0 0 0"
+										  Content="{TemplateBinding Content}"
+										  ContentTemplate="{TemplateBinding ContentTemplate}"
+										  RecognizesAccessKey="True"/>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+
+
+	</Style>
+
+	<Style Selector="RadioButton.Menu:pointerover">
+		<Setter Property="Margin" Value="0 0 0 5"/>
+		<Setter Property="Background" Value="#7BB5B8"/>
+	</Style>
+	<Style Selector="RadioButton.Menu:checked">
+		<Setter Property="Margin" Value="0 0 0 5"/>
+		<Setter Property="Background" Value="#3A9095"/>
+	</Style>
+
+
+	<!--Icon button-->
+	<Style Selector="Button.Icon">
+		<!--Button at rest-->
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="Width" Value="20"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border Background="{TemplateBinding Background}">
+						<ContentPresenter Name="PART_ContentPresenter"
+										  VerticalAlignment="Center"
+										  HorizontalAlignment="Center"
+										  Content="{TemplateBinding Content}"
+										  ContentTemplate="{TemplateBinding ContentTemplate}"
+										  RecognizesAccessKey="True"/>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style Selector="Button.Icon:pointerover">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+	<Style Selector="Button.Icon:disable">
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Opacity" Value="0.4"/>
+	</Style>
+</Styles>

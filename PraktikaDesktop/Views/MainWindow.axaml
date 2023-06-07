@@ -1,0 +1,225 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PraktikaDesktop.ViewModels"
+        xmlns:vmdialog="using:PraktikaDesktop.ViewModels.Dialog"
+        xmlns:v="using:PraktikaDesktop.Views"
+        xmlns:vdialog="using:PraktikaDesktop.Views.Dialog"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:material="using:Material.Icons.Avalonia"
+        mc:Ignorable="d"
+        x:Class="PraktikaDesktop.Views.MainWindow"
+        Title="PraktikaDesktop"
+        WindowStartupLocation="CenterScreen" Height="700" Width="1300"
+		Background="{StaticResource primaryBackColor1}">
+	
+	<Window.DataContext>
+		<vm:MainWindowViewModel/>
+	</Window.DataContext>
+	
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+	<Window.Resources>
+		<DataTemplate DataType="{x:Type	vdialog:BaseDialogView}">
+			<vmdialog:BaseDialogViewModel/>
+		</DataTemplate>
+	</Window.Resources>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<!--Navigation menu-->
+			<ColumnDefinition Width="250"/>
+			<!--MainSpace-->
+			<ColumnDefinition/>
+		</Grid.ColumnDefinitions>
+
+		<!--Navigation menu-->
+		<Border Grid.Column="0"
+				IsEnabled="{Binding MainEnable}"
+				Background="{StaticResource primaryBackColor2}">
+
+			<StackPanel>
+
+				<!--Logo-->
+				<StackPanel Orientation="Horizontal"
+							Height="45"
+							Margin="15,25,0,40">
+					<Image Source="/Assets/Logo2.png"
+						   Height="75"/>
+
+					<StackPanel>
+						<TextBlock Text="Янтарь"
+								   FontSize="26"
+								   Foreground="DarkRed"
+								   FontWeight="Medium"
+								   VerticalAlignment="Center"
+								   Margin="10,0,0,0"
+								   TextWrapping="Wrap"/>
+						<TextBlock Text="Производство мебели"
+								   Foreground="DarkRed"
+								   FontSize="14"
+								   FontWeight="Medium"
+								   Margin="10,0,0,0"
+								   TextWrapping="Wrap"/>
+					</StackPanel>
+
+				</StackPanel>
+
+				<!--Menu Button-->
+				<RadioButton Classes="Menu" Width="250" IsChecked="True"
+							 Command="{Binding ShowSupplyViewCommand}">
+					<StackPanel Orientation="Horizontal">
+						<material:MaterialIcon Kind="Truck" Height="25" Width="25" Margin="15 0 20 0"/>
+						<TextBlock Text="Поставки" FontSize="18"/>
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Classes="Menu" Width="250"
+							 Command="{Binding ShowOrderViewCommand}">
+					<StackPanel Orientation="Horizontal">
+						<material:MaterialIcon Kind="Package" Height="25" Width="25" Margin="15 0 20 0"/>
+						<TextBlock Text="Заказы" FontSize="18"/>
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Classes="Menu" Width="250"
+							 Command="{Binding ShowBuyerCommand}">
+					<StackPanel Orientation="Horizontal">
+						<material:MaterialIcon Kind="AccountMultiple" Height="25" Width="25" Margin="15 0 20 0"/>
+						<TextBlock Text="Покупатели" FontSize="18"/>
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Classes="Menu" Width="250"
+							 Command="{Binding ShowProductViewCommand}">
+					<StackPanel Orientation="Horizontal">
+						<material:MaterialIcon Kind="PackageVariantClosed" Height="25" Width="25" Margin="15 0 20 0"/>
+						<TextBlock Text="Продукция" FontSize="18"/>
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Classes="Menu" Width="250"
+							 Command="{Binding ShowTextileViewCommand}">
+					<StackPanel Orientation="Horizontal">
+						<material:MaterialIcon Kind="PaletteSwatch" Height="25" Width="25" Margin="15 0 20 0"/>
+						<TextBlock Text="Ткани" FontSize="18"/>
+					</StackPanel>
+				</RadioButton>
+
+				<RadioButton Classes="Menu" Width="250"
+							 Command="{Binding ShowColorViewCommand}">
+					<StackPanel Orientation="Horizontal">
+						<material:MaterialIcon Kind="Palette" Height="25" Width="25" Margin="15 0 20 0"/>
+						<TextBlock Text="Цвета" FontSize="18"/>
+					</StackPanel>
+				</RadioButton>
+
+
+				<RadioButton Classes="Menu" Width="250"
+							 Command="{Binding ShowEmployeeViewCommand}">
+					<StackPanel Orientation="Horizontal">
+						<material:MaterialIcon Kind="User" Height="25" Width="25" Margin="15 0 20 0"/>
+						<TextBlock Text="Сотрудники" FontSize="18"/>
+					</StackPanel>
+				</RadioButton>
+
+			</StackPanel>
+
+		</Border>
+
+		<!--MainSpace-->
+		<Grid Grid.Column="1"
+			  IsEnabled="{Binding MainEnable}">
+			<Grid.RowDefinitions>
+				<!--Header-->
+				<RowDefinition Height="50"/>
+				<!--Content section-->
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<!--Header-->
+			<Grid Grid.Row="0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+
+				<StackPanel Grid.Column="0"
+							Orientation="Horizontal"
+							VerticalAlignment="Center">
+
+					<material:MaterialIcon Kind="{Binding Icon}" Height="25" Width="25" 
+										   Margin="25 0 10 0"/>
+					<TextBlock Text="{Binding Caption}"
+							   FontSize="18"
+							   FontFamily="Montserrat"
+							   FontWeight="Medium"
+							   VerticalAlignment="Center"/>
+
+					<Button Margin="10 0 0 0" Classes="Icon"
+							Tag="{StaticResource color1}" Cursor="Hand">
+						<Button.Content>
+							<material:MaterialIcon Kind="Pencil" Height="20" Width="20"/>
+						</Button.Content>
+					</Button>
+
+					<Button Classes="Icon"
+							Tag="{StaticResource color1}" Cursor="Hand">
+						<Button.Content>
+							<material:MaterialIcon Kind="Plus"  Height="25" Width="25"/>
+						</Button.Content>
+					</Button>
+
+					<Button Classes="Icon"  Margin="10 0 0 0" 
+							Tag="{StaticResource color1}" Cursor="Hand">
+						<Button.Content>
+							<material:MaterialIcon Kind="ArrowLeft" Height="20" Width="20"/>
+						</Button.Content>
+					</Button>
+
+				</StackPanel>
+
+				<ReversibleStackPanel Grid.Column="1"
+									  Orientation="Horizontal"
+									  VerticalAlignment="Center"
+									  HorizontalAlignment="Right"
+									  Margin="0,0,10,0"
+									  ReverseOrder="True">
+
+
+					<Button Classes="Icon" Margin="10 0 0 0"
+							Command="{Binding ExecuteLogoutCommand}"
+							CommandParameter="{Binding ElementName=mainWindow}">
+						<material:MaterialIcon Kind="ExitToApp"  Height="25" Width="25"/>
+					</Button>
+
+					<TextBlock Text="{Binding LoginEmployee.Login}"
+							   FontSize="18"
+							   VerticalAlignment="Center"/>
+					
+				</ReversibleStackPanel>
+
+			</Grid>
+
+			<!--Content section-->
+			<Grid Grid.Row="1">
+				<Image Source="/Assets/Logo.png"
+					   Opacity="0.15"
+					   Height="400"/>
+				<ContentControl Content="{Binding CurrentChildView}"
+								Margin="15"/>
+			</Grid>
+
+		</Grid>
+		<!--Dimming effect-->
+		<Rectangle Fill="Black" Grid.ColumnSpan="2" Opacity="0.4"
+				   IsVisible="{Binding DimmingEffectEnable}"/>
+
+		<StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<ContentControl Content="{Binding DialogView}"/>
+		</StackPanel>
+	</Grid>
+
+</Window>

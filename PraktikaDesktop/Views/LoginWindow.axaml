@@ -1,0 +1,92 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PraktikaDesktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="PraktikaDesktop.Views.LoginWindow"
+		xmlns:viewmodels="clr-namespace:PraktikaDesktop.ViewModels"
+        Title="Login" Height="600" Width="900"
+        WindowStartupLocation="CenterScreen"
+		x:Name="loginWindow">
+
+	<Design.DataContext>
+		<vm:LoginWindowViewModel/>
+	</Design.DataContext>
+
+	<Window.DataContext>
+		<vm:LoginWindowViewModel/>
+	</Window.DataContext>
+
+	<Border Background="{StaticResource primaryBackColor1}">
+
+		<StackPanel Width="250"
+					Grid.Row="1"
+					Orientation="Vertical"
+					VerticalAlignment="Center">
+
+			<Image Source="/Assets/Logo.png"/>
+
+			<TextBlock Text="Имя пользователя"
+					   FontSize="12"
+					   FontWeight="Medium"
+					   FontFamily="Montserrat"
+					   Margin="0,35,0,0"/>
+
+			<TextBox FontSize="13" Text="{Binding Login}"
+					 FontWeight="Medium"
+					 Height="28"
+					 Margin="0 5"/>
+
+			<TextBlock Text="Пароль"
+					   FontSize="12"
+					   FontWeight="Medium"
+					   Margin="0 30 0 0"/>
+
+			<TextBox PasswordChar="•" Text="{Binding Password}"
+					 FontWeight="Medium"
+					 Margin="0 5"/>
+
+			<TextBlock FontSize="14"
+					   FontWeight="Medium"
+					   Margin="0 5"
+					   TextWrapping="Wrap"
+					   Foreground="Red"
+					   TextAlignment="Center"/>
+
+			<Button FontSize="16" Background="#10797F"
+					Cursor="Hand" Content="Войти"
+					Margin="0 25" HorizontalAlignment="Center"
+					IsDefault="True"
+					Command="{Binding LoginCommand}"
+					CommandParameter="{Binding ElementName=loginWindow}">
+
+				<Button.Template>
+					<ControlTemplate TargetType="Button">
+						<Border Width="150" Height="40"
+								CornerRadius="20"
+								Background="{TemplateBinding Background}">
+							<ContentPresenter VerticalAlignment="Center"
+											  HorizontalAlignment="Center"
+											  Content="{TemplateBinding Content}"/>
+
+							<Border.Styles>
+								<Style Selector="Border">
+									<Setter Property="Background" Value="#10797F" />
+								</Style>
+								<Style Selector="Border:pointerover">
+									<Setter Property="Background" Value="#3A9095" />
+								</Style>
+							</Border.Styles>
+
+						</Border>
+					</ControlTemplate>
+				</Button.Template>
+			</Button>
+
+		</StackPanel>
+
+
+	</Border>
+	
+</Window>
