@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PraktikaDesktop.Models;
 
@@ -10,6 +9,8 @@ public partial class Employee
     public string Login { get; set; } = null!;
 
     public string Password { get; set; } = null!;
+
+    public string FullName { get; set; } = null!;
 
     public int RoleId { get; set; }
 

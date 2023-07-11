@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
+			 x:Class="PraktikaDesktop.Views.EditEmployeeView"
+             xmlns:converters="clr-namespace:PrktikaDesktop.Converters"
+			 xmlns:vm="using:PraktikaDesktop.ViewModels">
+
+	<Border Background="{StaticResource primaryBackColor2}"
+	CornerRadius="10 0 0 10">
+		<Grid>
+			<Grid.RowDefinitions>
+				<!--Header-->
+				<RowDefinition Height="50"/>
+				<!--Details-->
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<!--Header-->
+
+			<TextBlock Text="Редактирование"
+					   FontSize="22"
+					   FontWeight="Bold"
+					   VerticalAlignment="Center"
+					   Height="30"
+					   Margin="10"/>
+
+			<Button Classes="Icon" Tag="Check"
+					HorizontalAlignment="Right" Margin="0 0 10 0"
+					Command="{Binding ClickSaveCommand}"/>
+
+			<!--Details-->
+			<Grid Grid.Row="1" Margin="10 0 10 10">
+
+				<StackPanel Margin="0 0 0 10" VerticalAlignment="Top"
+							Orientation="Horizontal">
+					<TextBlock Text="Сотрудник № " VerticalAlignment="Center"
+							   FontSize="18" FontWeight="Bold"/>
+
+					<TextBlock Text="{Binding EditableEmployee.EmployeeId}" VerticalAlignment="Center"
+							   FontSize="18" FontWeight="Bold"/>
+				</StackPanel>
+
+				<DockPanel Margin="0 30 0 0" LastChildFill="False"
+						   IsVisible="{Binding	IndividualSelected}">
+
+					<!--Full name-->
+					<DockPanel DockPanel.Dock="Top"
+							   Margin="0 0 0 10">
+						<TextBlock Text="ФИО: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Text="{Binding EditableEmployee.FullName}"
+								 FontSize="18" Watermark="ФИО..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--Login-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Логин: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Text="{Binding EditableEmployee.Login}"
+								 FontSize="18" Watermark="Логин..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--Role-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Адрес: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<ComboBox Margin="10 0 0 0" PlaceholderText="Должность..."
+								  Items="{Binding RolesList}" SelectedItem="{Binding SelectedRole}"
+								  VerticalAlignment="Center">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</DockPanel>
+
+					<!--Password-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Новый пароль: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Text="{Binding NewPassword}"
+								 FontSize="18" Watermark="Новый пароль..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+				</DockPanel>
+
+			</Grid>
+
+		</Grid>
+	</Border>
+
+</UserControl>

@@ -1,5 +1,7 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:material="using:Material.Icons.Avalonia"
+		xmlns:converters="clr-namespace:PraktikaDesktop.Converters">
 	
 	<!--Menu button-->
 	<Style Selector="RadioButton.Menu">
@@ -13,21 +15,15 @@
 					<Border Background="{TemplateBinding Background}"
                             BorderThickness="4,0,0,0"
                             BorderBrush="{TemplateBinding BorderBrush}">
-						<ContentPresenter Name="PART_ContentPresenter"
-										  VerticalAlignment="Center"
-										  HorizontalAlignment="Left"
-										  Margin="15 0 0 0"
-										  Content="{TemplateBinding Content}"
-										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  RecognizesAccessKey="True"/>
+						<StackPanel Orientation="Horizontal">
+							<material:MaterialIcon Kind="{Binding $parent[RadioButton].Tag}" Height="25" Width="25" Margin="30 0 20 0"/>
+							<TextBlock Text="{Binding $parent[RadioButton].Content}" FontSize="18" VerticalAlignment="Center"/>
+						</StackPanel>
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-
-
 	</Style>
-
 	<Style Selector="RadioButton.Menu:pointerover">
 		<Setter Property="Margin" Value="0 0 0 5"/>
 		<Setter Property="Background" Value="#7BB5B8"/>
@@ -51,15 +47,15 @@
 					<Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"
 							CornerRadius="{TemplateBinding CornerRadius}"
 							Background="{TemplateBinding Background}">
-						<ContentPresenter VerticalAlignment="Center"
-										  HorizontalAlignment="Center"
-										  Content="{TemplateBinding Content}"/>
+						<TextBlock VerticalAlignment="Center"
+								   HorizontalAlignment="Center"
+								   Text="{TemplateBinding Content}"
+								   Background="Transparent"/>
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</Style>
-	
 	<Style Selector="Button.Rounded:pointerover">
 		<Setter Property="Background" Value="#3A9095"/>
 	</Style>
@@ -68,29 +64,28 @@
 	<Style Selector="Button.Icon">
 		<!--Button at rest-->
 		<Setter Property="Cursor" Value="Hand"/>
-		<Setter Property="Width" Value="20"/>
-		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Width" Value="22"/>
+		<Setter Property="Height" Value="22"/>
+		<Setter Property="Background" Value="Black"/>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
-					<Border Background="{TemplateBinding Background}">
-						<ContentPresenter Name="PART_ContentPresenter"
-										  VerticalAlignment="Center"
-										  HorizontalAlignment="Center"
-										  Content="{TemplateBinding Content}"
-										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  RecognizesAccessKey="True"/>
+					<Border Background="Transparent">
+						<material:MaterialIcon Kind="{Binding $parent[Button].Tag}"
+											   Foreground="{Binding	$parent[Button].Background}"
+											   Height="{Binding	$parent[Button].Width}" Width="{Binding $parent[Button].Width}"/>
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+		<Setter Property="Transitions">
+			<Transitions>
+				<DoubleTransition Property="Width" Duration="0:0:0.1"/>
+			</Transitions>
+		</Setter>
 	</Style>
-
 	<Style Selector="Button.Icon:pointerover">
-		<Setter Property="Background" Value="Transparent"/>
-	</Style>
-	<Style Selector="Button.Icon:disable">
-		<Setter Property="Background" Value="Transparent"/>
-		<Setter Property="Opacity" Value="0.4"/>
+		<Setter Property="Width" Value="25"/>
+		<Setter Property="Background" Value="#10797F"/>
 	</Style>
 </Styles>

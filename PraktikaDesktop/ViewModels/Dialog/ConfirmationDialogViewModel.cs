@@ -1,26 +1,37 @@
-﻿using System.Windows.Input;
+﻿using ReactiveUI;
 
 namespace PraktikaDesktop.ViewModels.Dialog
 {
     public class ConfirmationDialogViewModel : ViewModelBase
     {
         //Fields
-        MainWindowViewModel _mainWindowViewModel;
+        ViewModelBase _mainWindowViewModel;
+
+        private string _message;
+
+        //Properties
+        public string Message
+        {
+            get => _message;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _message, value);
+            }
+        }
         //Commands execution
         private void ClickYesCommand()
         {
-            _mainWindowViewModel.DialogResult = true;
-            _mainWindowViewModel.CloseDialog();
+            _mainWindowViewModel.CloseDialog(true);
         }
         private void ClickNoCommand()
         {
-            _mainWindowViewModel.DialogResult = false;
-            _mainWindowViewModel.CloseDialog();
+            _mainWindowViewModel.CloseDialog(false);
         }
 
         //Constructor
-        public ConfirmationDialogViewModel(MainWindowViewModel mainWindowViewModel)
+        public ConfirmationDialogViewModel(ViewModelBase mainWindowViewModel, string message)
         {
+            Message = $"\n" + message;
             _mainWindowViewModel = mainWindowViewModel;
         }
     }

@@ -1,0 +1,124 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="600"
+             x:Class="PraktikaDesktop.Views.AddSupplyView"             
+			 xmlns:converters="clr-namespace:PraktikaDesktop.Converters"
+			 xmlns:vm="using:PraktikaDesktop.ViewModels">
+	
+	<UserControl.Resources>
+		<converters:DataGridCellBackgroundConverter x:Key="DataGridCellBackgroundConverter"/>
+	</UserControl.Resources>
+
+	<Border Background="{StaticResource primaryBackColor2}"
+			Grid.Column="1" Grid.RowSpan="2"
+			CornerRadius="10 0 0 10">
+		<Grid>
+			<Grid.RowDefinitions>
+				<!--Header-->
+				<RowDefinition Height="50"/>
+				<!--Details-->
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<!--Header-->
+			<TextBlock Text="Создание"
+					   FontSize="22"
+					   FontWeight="Bold"
+					   VerticalAlignment="Center"
+					   Height="30"
+					   Margin="10"/>
+
+			<Button Classes="Icon" Tag="Check"
+					HorizontalAlignment="Right" Margin="0 0 10 0"
+					Command="{Binding ClickSaveCommand}"/>
+
+			<!--Details-->
+			<Grid Grid.Row="1" Margin="10 0 10 10">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="110"/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+				<!--Content-->
+				<StackPanel Orientation="Vertical">
+
+					<!--Id-->
+					<StackPanel Orientation="Horizontal"
+								Margin="0 10 0 10">
+						<TextBlock Text="Новая поставка"
+								   FontSize="18" FontWeight="Bold"/>
+						
+					</StackPanel>
+
+					<!--Date-->
+					<StackPanel Orientation="Horizontal"
+								Margin="0 0 0 10">
+						<TextBlock Text="Дата: "
+								   FontSize="18" FontWeight="Bold"
+								   VerticalAlignment="Center"/>
+						<CalendarDatePicker Watermark="Выберите дату"
+											SelectedDate="{Binding NewSupply.Date, Mode=TwoWay}"/>
+					</StackPanel>
+
+					<!--Products-->
+					<Grid>
+						<TextBlock Text="Список продукции:"
+								   Margin="0 0 0 5"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+							<Button Classes="Icon" Tag="Pencil"
+									Margin="0 0 0 0"
+									Command="{Binding EditSupplyProductsCommand}"/>
+						</StackPanel>
+					</Grid>
+
+				</StackPanel>
+
+				<DataGrid Items="{Binding AllSupplyProducts}" AutoGenerateColumns="False"
+						  Background="Transparent" SelectionMode="Single"
+						  BorderThickness="0" Grid.Row="1">
+
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="SN" IsReadOnly="True"
+											Binding="{Binding SupplyProductsId}"
+											Width="auto" CanUserResize="False"/>
+
+						<DataGridTextColumn Header="Продукция" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Product.Name}"
+											MinWidth="175"/>
+
+						<DataGridTextColumn Header="Цвет" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Product.Color.Name}"
+											Width="100"/>
+
+						<DataGridTextColumn Header="Ткань" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Textile.Name}"
+											Width="100"/>
+
+						<DataGridTextColumn Header="Статус" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Status}"
+											Width="100"/>
+
+						<DataGridTextColumn Header="Заказ" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding OrderProducts[0].Order.OrderId}"
+											Width="auto"/>
+
+					</DataGrid.Columns>
+
+					<DataGrid.Styles>
+						<Style Selector="DataGridCell">
+							<Setter Property="Background"
+									Value="{Binding	RelativeSource={RelativeSource Self}, Path=DataContext, Converter={StaticResource DataGridCellBackgroundConverter}}"/>
+						</Style>
+					</DataGrid.Styles>
+
+				</DataGrid>
+
+			</Grid>
+
+		</Grid>
+	</Border>
+
+</UserControl>

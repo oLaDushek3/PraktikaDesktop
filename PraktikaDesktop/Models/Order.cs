@@ -9,7 +9,7 @@ public partial class Order
 
     public int EmployeeId { get; set; }
 
-    public DateOnly Date { get; set; }
+    public DateTime Date { get; set; } = DateTime.Now;
 
     public int BuyerId { get; set; }
 
@@ -25,5 +25,5 @@ public partial class Order
 
     public virtual Employee Employee { get; set; } = null!;
 
-    public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+    public virtual List<SupplyProduct> SupplyProducts { get; set; } = new List<SupplyProduct>();
 }

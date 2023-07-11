@@ -12,4 +12,6 @@ public partial class Textile
     public string Name { get; set; } = null!;
 
     public virtual PriceCategory PriceCategory { get; set; } = null!;
+
+    public virtual ICollection<SupplyProduct> SupplyProducts { get; set; } = new List<SupplyProduct>();
 }

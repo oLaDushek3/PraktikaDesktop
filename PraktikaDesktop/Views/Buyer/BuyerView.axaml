@@ -1,0 +1,473 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 xmlns:material="using:Material.Icons.Avalonia"
+             xmlns:converters="clr-namespace:PraktikaDesktop.Converters"
+             mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="1000"
+             x:Class="PraktikaDesktop.Views.BuyerView"
+			 x:Name="buyerView"
+			 xmlns:vm="using:PraktikaDesktop.ViewModels">
+			 
+	<UserControl.Resources>
+		<converters:FullNameConverter x:Key="FullNameConverter"/>
+		<converters:TextLengthConverter x:Key="TextLengthConverter"/>
+	</UserControl.Resources>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<!--All items-->
+			<ColumnDefinition Width="65*"/>
+			<!--Selected item-->
+			<ColumnDefinition  Width="35*"/>
+		</Grid.ColumnDefinitions>
+
+		<Grid.RowDefinitions>
+			<!--Header-->
+			<RowDefinition Height="45"/>
+			<!--List-->
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+
+		<!--Header-->
+		<Border Background="{StaticResource primaryBackColor2}" IsEnabled="{Binding !AnimationAction}"
+				Grid.Row="0"
+				CornerRadius="10" Margin="0 0 5 0">
+			<StackPanel Orientation="Horizontal">
+				<TextBox Width="200" Margin="15 0 0 5"
+						 VerticalAlignment="Bottom" Watermark="Поиск..."
+						 Text="{Binding SearchString, Mode=TwoWay}"/>
+				<Button Margin="10 5 0 0"
+						Classes="Icon" Tag="Close"
+						VerticalAlignment="Center"
+						Command="{Binding ClearSearchCommand}"/>
+
+				<ComboBox Margin="15 3 0 0"
+						  Items="{Binding SorTypestList}" SelectedItem="{Binding SelectedSortType}"
+						  VerticalAlignment="Center" Width="175"/>
+			</StackPanel>
+		</Border>
+
+		<!--List-->
+		<Border Grid.Row="1" Margin="0 5 5 0" IsEnabled="{Binding !AnimationAction}">
+			<Grid>
+				<!--Emptiness message-->
+				<TextBlock Text="Нет записей"
+						   FontSize="22" FontWeight="Bold"
+						   VerticalAlignment="Center" HorizontalAlignment="Center"
+						   Height="30"
+						   IsVisible="{Binding ListEmpty}"/>
+
+				<!--Content-->
+				<Grid IsVisible="{Binding !ListEmpty}">
+					<DataGrid Items="{Binding DisplayedBuyers}" SelectedItem="{Binding SelectedBuyer}" SelectionMode="Single"
+						  AutoGenerateColumns="False" CanUserResizeColumns="False"
+						  Background="Transparent" BorderThickness="0"
+						  IsVisible="True" Name="IndividualList">
+						<DataGrid.Columns>
+							<DataGridTextColumn Header="#" IsReadOnly="True"
+												Binding="{Binding BuyerId}"
+												Width="auto"/>
+
+							<DataGridTextColumn Header="ФИО" IsReadOnly="True"
+												Binding="{Binding Individual.FullName, Converter={StaticResource FullNameConverter}}"
+												Width="200"/>
+
+							<DataGridTextColumn Header="Телефон" IsReadOnly="True"
+												Binding="{Binding Individual.Phone}"
+												Width="150"/>
+
+							<DataGridTextColumn Header="Адрес" IsReadOnly="True"
+												Binding="{Binding Address, Converter={StaticResource TextLengthConverter}, Mode=OneWay}"
+												Width="200"/>
+
+							<DataGridTextColumn Header="Паспорт" IsReadOnly="True"
+												Binding="{Binding Individual.SeriesPassportNumber}"
+												Width="150"/>
+
+							<DataGridTemplateColumn Width="22">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Button Classes="Icon" Tag="Trash"
+												CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"
+												Command="{Binding ElementName=selectBuyerView, Path=DataContext.DeleteBuyerCommand}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+						</DataGrid.Columns>
+
+						<DataGrid.Styles>
+							<Style Selector="DataGrid">
+								<Setter Property="(i:Interaction.Behaviors)">
+									<i:BehaviorCollectionTemplate>
+										<i:BehaviorCollection>
+											<ia:DataTriggerBehavior Binding="{Binding SelectedSortType}"
+																	Value="Физ. лица">
+												<ia:ChangePropertyAction TargetObject="$parent"
+																		 PropertyName="IsVisible"
+																		 Value="True"/>
+											</ia:DataTriggerBehavior>
+
+											<ia:DataTriggerBehavior Binding="{Binding SelectedSortType}"
+																	Value="Юр. лица">
+												<ia:ChangePropertyAction TargetObject="$parent"
+																		 PropertyName="IsVisible"
+																		 Value="False"/>
+											</ia:DataTriggerBehavior>
+										</i:BehaviorCollection>
+									</i:BehaviorCollectionTemplate>
+								</Setter>
+							</Style>
+						</DataGrid.Styles>
+
+					</DataGrid>
+
+					<DataGrid Items="{Binding DisplayedBuyers}" SelectedItem="{Binding SelectedBuyer}" SelectionMode="Single"
+							  AutoGenerateColumns="False" CanUserResizeColumns="False"
+							  Background="Transparent" BorderThickness="0"
+							  IsVisible="False">
+						<DataGrid.Columns>
+							<DataGridTextColumn Header="#" IsReadOnly="True"
+												Binding="{Binding BuyerId}"
+												Width="auto"/>
+
+							<DataGridTextColumn Header="Организация" IsReadOnly="True"
+												Binding="{Binding LegalEntity.Organization}"
+												Width="200"/>
+
+							<DataGridTextColumn Header="Телефон" IsReadOnly="True"
+												Binding="{Binding LegalEntity.Phone}"
+												Width="175"/>
+
+							<DataGridTextColumn Header="Адрес" IsReadOnly="True"
+												Binding="{Binding Address, Converter={StaticResource TextLengthConverter}, Mode=OneWay}"
+												Width="200"/>
+
+							<DataGridTextColumn Header="Расч. счет счет" IsReadOnly="True"
+												Binding="{Binding LegalEntity.CheckingAccount}"
+												Width="150"/>
+
+							<DataGridTextColumn Header="Банк" IsReadOnly="True"
+												Binding="{Binding LegalEntity.Bank}"
+												Width="175"/>
+
+							<DataGridTextColumn Header="Кор. счет" IsReadOnly="True"
+												Binding="{Binding LegalEntity.CorrespondentAccount}"
+												Width="150"/>
+
+							<DataGridTextColumn Header="БИК" IsReadOnly="True"
+												Binding="{Binding LegalEntity.Bic}"
+												Width="125"/>
+
+							<DataGridTextColumn Header="КПП" IsReadOnly="True"
+												Binding="{Binding LegalEntity.Rrc}"
+												Width="125"/>
+
+							<DataGridTextColumn Header="ИНН" IsReadOnly="True"
+												Binding="{Binding LegalEntity.Tin}"
+												Width="125"/>
+
+							<DataGridTemplateColumn Width="22">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Button Classes="Icon" Tag="Trash"
+												CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"
+												Command="{Binding ElementName=selectBuyerView, Path=DataContext.DeleteBuyerCommand}"/>
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+						</DataGrid.Columns>
+
+						<DataGrid.Styles>
+							<Style Selector="DataGrid">
+								<Setter Property="(i:Interaction.Behaviors)">
+									<i:BehaviorCollectionTemplate>
+										<i:BehaviorCollection>
+											<ia:DataTriggerBehavior Binding="{Binding SelectedSortType}"
+																	Value="Юр. лица">
+												<ia:ChangePropertyAction TargetObject="$parent"
+																		 PropertyName="IsVisible"
+																		 Value="True"/>
+											</ia:DataTriggerBehavior>
+
+											<ia:DataTriggerBehavior Binding="{Binding SelectedSortType}"
+																	Value="Физ. лица">
+												<ia:ChangePropertyAction TargetObject="$parent"
+																		 PropertyName="IsVisible"
+																		 Value="False"/>
+											</ia:DataTriggerBehavior>
+										</i:BehaviorCollection>
+									</i:BehaviorCollectionTemplate>
+								</Setter>
+							</Style>
+						</DataGrid.Styles>
+
+					</DataGrid>
+				</Grid>
+
+			</Grid>
+		</Border>
+
+		<!--Selected item-->
+		<Border Background="{StaticResource primaryBackColor2}"
+				Grid.Column="1" Grid.RowSpan="2"
+				CornerRadius="10" Margin="5 0 15 0">
+			<Grid>
+				<Grid.RowDefinitions>
+					<!--Header-->
+					<RowDefinition Height="50"/>
+					<!--Details-->
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+
+				<!--Header-->
+				<TextBlock Text="Подробности"
+						   FontSize="22"
+						   FontWeight="Bold"
+						   VerticalAlignment="Center"
+						   Height="30"
+						   Margin="10"/>
+
+				<!--Details-->
+				<Grid Grid.Row="1" Margin="10 0 10 10">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="100"/>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
+					<!--Emptiness message-->
+					<TextBlock Text="Выберите покупателя"
+							   FontSize="22" FontWeight="Bold"
+							   VerticalAlignment="Center" HorizontalAlignment="Center"
+							   Height="30" Grid.RowSpan="2"
+							   IsVisible="{Binding !BuyerIsSelected}"/>
+
+					<!--Content-->
+					<Grid IsVisible="{Binding BuyerIsSelected}">
+						<StackPanel Orientation="Vertical"
+									IsVisible="{Binding #IndividualList.IsVisible}">
+
+							<!--Id-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 10 0 10">
+								<TextBlock Text="Покупатель №: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.BuyerId}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--Full name-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="ФИО: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.Individual.FullName}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--Phone-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="Телефон: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.Individual.Phone}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--Address-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="Адрес: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.Address}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--Pasport-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="Паспорт: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.Individual.SeriesPassportNumber}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+						</StackPanel>
+
+						<StackPanel Orientation="Vertical"
+									IsVisible="{Binding !#IndividualList.IsVisible}">
+
+							<!--Id-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 10 0 10">
+								<TextBlock Text="Покупатель №: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.BuyerId}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--Organization-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="Организация: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.LegalEntity.Organization}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--Phone-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="Телефон: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.LegalEntity.Phone}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--Address-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="Адрес: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.Address}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center" TextWrapping="Wrap"/>
+							</StackPanel>
+
+							<!--CheckingAccount-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="Расчетный счет: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.LegalEntity.CheckingAccount}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--Bank-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="Банк: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.LegalEntity.Bank}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--CorrespondentAccount-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="Корр. счет: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.LegalEntity.CorrespondentAccount}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--BIC-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="БИК: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.LegalEntity.Bic}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--RRC-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="КПП: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.LegalEntity.Rrc}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+							<!--TIN-->
+							<StackPanel Orientation="Horizontal"
+										Margin="0 0 0 10">
+								<TextBlock Text="ИНН: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedBuyer.LegalEntity.Tin}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+
+						</StackPanel>
+					</Grid>
+
+				</Grid>
+
+			</Grid>
+		</Border>
+
+		<!--Add/Edit pannel-->
+		<Border Grid.Column="1" Grid.RowSpan="2"
+				CornerRadius="10 0 0 10" Margin="5 0 0 0">
+
+			<ContentControl HorizontalAlignment="Right"
+							Content="{Binding CurrentChildView}"
+							Width="0">
+
+				<ContentControl.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Width" Duration="0:0:0.4"/>
+					</Transitions>
+				</ContentControl.Transitions>
+
+				<ContentControl.Styles>
+					<Style Selector="ContentControl">
+						<Setter Property="(i:Interaction.Behaviors)">
+							<i:BehaviorCollectionTemplate>
+								<i:BehaviorCollection>
+									<ia:DataTriggerBehavior Binding="{Binding AnimationAction}"
+															Value="true">
+										<ia:ChangePropertyAction TargetObject="$parent"
+																 PropertyName="Width"
+																 Value="{Binding Path=Bounds.Width, RelativeSource={RelativeSource AncestorType=Border}}"/>
+									</ia:DataTriggerBehavior>
+
+									<ia:DataTriggerBehavior Binding="{Binding AnimationAction}"
+															Value="false">
+										<ia:ChangePropertyAction TargetObject="$parent"
+																 PropertyName="Width"
+																 Value="0"/>
+									</ia:DataTriggerBehavior>
+								</i:BehaviorCollection>
+							</i:BehaviorCollectionTemplate>
+						</Setter>
+					</Style>
+				</ContentControl.Styles>
+
+			</ContentControl>
+		</Border>
+
+	</Grid>
+</UserControl>

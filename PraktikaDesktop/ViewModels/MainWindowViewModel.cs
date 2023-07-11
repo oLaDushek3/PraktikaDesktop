@@ -3,7 +3,6 @@ using PraktikaDesktop.Interface;
 using PraktikaDesktop.Models;
 using PraktikaDesktop.ViewModels.Dialog;
 using ReactiveUI;
-using System.ComponentModel;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,8 +20,10 @@ namespace PraktikaDesktop.ViewModels
         private string _caption;
         private string _icon;
 
+        private bool _admin;
+
         //Properties
-        private Employee LoginEmployee
+        public Employee LoginEmployee
         {
             get => _loginEmployee;
             set
@@ -56,6 +57,12 @@ namespace PraktikaDesktop.ViewModels
             }
         }
 
+        public bool Admin
+        {
+            get => _admin;
+            set => this.RaiseAndSetIfChanged(ref _admin, value);
+        }
+
         //Command
         private void ExecuteLogoutCommand(object view)
         {
@@ -64,11 +71,10 @@ namespace PraktikaDesktop.ViewModels
 
             _windowService = new MainWindowService();
             _windowService.Close(view);
-
         }
         public void ShowSupplyViewCommand()
         {
-            SupplyViewModel viewModel = new SupplyViewModel();
+            SupplyViewModel viewModel = new SupplyViewModel(this);
             CurrentChildView = viewModel;
 
             Caption = "Поставки";
@@ -76,63 +82,70 @@ namespace PraktikaDesktop.ViewModels
         }
         public void ShowOrderViewCommand()
         {
+            OrderViewModel viewModel = new OrderViewModel(this);
+            CurrentChildView = viewModel;
+
             Caption = "Заказы";
             Icon = "Package";
         }
         public void ShowBuyerCommand()
         {
+            BuyerViewModel viewModel = new BuyerViewModel(this);
+            CurrentChildView = viewModel;
+
             Caption = "Покупатели";
             Icon = "AccountMultiple";
-
         }
         public void ShowProductViewCommand()
         {
+            ProductViewModel viewModel = new ProductViewModel(this);
+            CurrentChildView = viewModel;
+
             Caption = "Продукция";
             Icon = "PackageVariantClosed";
         }
-        public void ShowTextileViewCommand()
+        public void ShowEmployeeViewCommand()
         {
-            Caption = "Ткани";
-            Icon = "PaletteSwatch";
+            EmployeeViewModel viewModel = new EmployeeViewModel(this);
+            CurrentChildView = viewModel;
 
-        }
-        public void ShowColorViewCommand()
-        {
-            Caption = "Цвета";
-            Icon = "Palette";
-        }
-        public async void ShowEmployeeViewCommand()
-        {
             Caption = "Сотрудники";
             Icon = "Users";
+        }
+        public void ShowSalesAndRemainsViewCommand()
+        {
+            SalesAndRemainsViewModel viewModel = new SalesAndRemainsViewModel();
+            CurrentChildView = viewModel;
 
-            ConfirmationDialogViewModel viewModel = new ConfirmationDialogViewModel(this);
-            bool result = await ShowDialog(viewModel);
-            if(result)
-                result = false;
+            Caption = "Продажи и остатки";
+            Icon = "PercentBox";
         }
 
         //Constructor
         public MainWindowViewModel()
         {
-            //Design.DataContext error
-            //Enable on at work
-            //LoadUser();
-            ShowSupplyViewCommand();
+            LoadUser();
+            ShowOrderViewCommand();
         }
+
+        //Methods
         private void LoadUser()
         {
             _response = ApiRequest.Get($"Employee/GetEmployeeByLogin/{Thread.CurrentPrincipal.Identity.Name}");
             LoginEmployee = _response.Content.ReadAsAsync<Employee>().Result;
+            if (LoginEmployee.Role.AccessLevel == 1)
+                Admin = true;
+            else
+                Admin = false;
         }
 
         #region Dialog
-        //Fields
+        //Dialog fields
         private ViewModelBase? _dialogView;
         private bool _mainEnable = true;
         private bool _dimmingEffectEnable = false;
 
-        //Properties
+        //Dialog properties
         public ViewModelBase? DialogView
         {
             get => _dialogView;
@@ -162,7 +175,7 @@ namespace PraktikaDesktop.ViewModels
         public event CloseDialogDelegate CloseDialogEvent;
         public bool DialogResult;
 
-        //Methods
+        //Dialog methods
         public Task<bool> ShowDialog(ViewModelBase currentDialogView)
         {
             BaseDialogViewModel baseDialogViewModel = new(currentDialogView);
@@ -176,8 +189,9 @@ namespace PraktikaDesktop.ViewModels
             CloseDialogEvent += () => completion.TrySetResult(DialogResult);
             return completion.Task;
         }
-        public void CloseDialog()
+        public override void CloseDialog(bool dialogResult)
         {
+            DialogResult = dialogResult;
             DialogView = null;
             MainEnable = true;
             DimmingEffectEnable = false;

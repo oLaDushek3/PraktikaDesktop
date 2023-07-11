@@ -1,0 +1,194 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="1000"
+             x:Class="PraktikaDesktop.Views.SalesAndRemainsView"
+             xmlns:converters="clr-namespace:PraktikaDesktop.Converters"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 Background="{StaticResource primaryBackColor1}"
+			 xmlns:vm="using:PraktikaDesktop.ViewModels.Dialog"
+			 xmlns:material="using:Material.Icons.Avalonia"
+			 CornerRadius="10" x:Name="selectSupplyProductView">
+
+	<UserControl.Resources>
+		<converters:TextLengthConverter x:Key="TextLengthConverter"/>
+		<converters:PriceConverter x:Key="PriceConverter"/>
+		<converters:ProductPriceConverter x:Key="ProductPriceConverter"/>
+	</UserControl.Resources>
+
+	<Grid>
+
+		<!--Main space-->
+		<DockPanel Grid.Row="1">
+
+			<!--All products-->
+			<!--Header-->
+			<Border Background="{StaticResource primaryBackColor2}"
+				    Height="{Binding SortingHeight}" DockPanel.Dock="Top"
+					CornerRadius="10" Margin="5">
+				<ContentControl>
+					<Grid>
+						<Button Background="Transparent" Margin="5 0 0 0"
+								Command="{Binding ExpandSortingCommand}">
+							<PathIcon Height="12"
+									  Width="12"
+									  Data="M1939 486L2029 576L1024 1581L19 576L109 486L1024 1401L1939 486Z"/>
+						</Button>
+
+						<StackPanel Orientation="Vertical" Margin="25 0 0 0">
+							<StackPanel Orientation="Horizontal"
+										VerticalAlignment="Top" Margin="0 5 0 5">
+
+								<TextBox Width="200" Margin="15 0 0 0"
+										 VerticalAlignment="Center" Watermark="Поиск..."
+										 Text="{Binding SearchString, Mode=TwoWay}"/>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSearchCommand}"/>
+
+								<ComboBox Margin="15 0 0 0" PlaceholderText="Цвет..."
+										  Items="{Binding ColorsList}" SelectedItem="{Binding SortSelectedColor}"
+										  VerticalAlignment="Center" Width="155">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSortByColorCommand}"/>
+
+								<TextBox Width="125" Margin="15 0 0 0"
+										 VerticalAlignment="Center" Watermark="Поиск тканей..."
+										 Text="{Binding SearchTextileString, Mode=TwoWay}"
+										 IsVisible="{Binding !EmptinessProductPriceCategorys}"/>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearTextileSearchCommand}"
+										IsVisible="{Binding !EmptinessProductPriceCategorys}"/>
+
+								<ComboBox Margin="15 0 0 0" PlaceholderText="Статус..."
+										  Items="{Binding StatusList}" SelectedItem="{Binding SelectedStatus}"
+										  VerticalAlignment="Center" Width="155"/>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSortByStatusCommand}"/>
+							</StackPanel>
+
+							<StackPanel Orientation="Horizontal"
+										VerticalAlignment="Top" Margin="0 5 0 5">
+
+								<ComboBox Margin="15 0 0 0" PlaceholderText="Группа..."
+										  Items="{Binding ProductGroups}" SelectedItem="{Binding SortSelectedProductGroup}"
+										  VerticalAlignment="Center" Width="155">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSearchByGroupCommand}"/>
+
+								<ComboBox Margin="15 0 0 0" PlaceholderText="Тип..."
+										  Items="{Binding SortSelectedProductGroup.ProductTypes}" SelectedItem="{Binding SortSelectedProductType}"
+										  VerticalAlignment="Center" Width="155">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSearchByTypeCommand}"/>
+							</StackPanel>
+						</StackPanel>
+					</Grid>
+				</ContentControl>
+
+				<Border.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Height" Duration="0:0:0.2"/>
+					</Transitions>
+				</Border.Transitions>
+			</Border>
+
+			<!--List-->
+			<Grid Grid.Row="2" Margin="5 0 5 0" DockPanel.Dock="Bottom">
+
+				<TextBlock Text="Нет записей" IsVisible="{Binding SupplyProductEmpty}"
+						   FontSize="22" FontWeight="Bold" TextWrapping="Wrap" TextAlignment="Center"
+						   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+				<DataGrid Items="{Binding AvailableSupplyProduct}" AutoGenerateColumns="False"
+						  SelectedItem="{Binding SelectedSupplyProduct}"
+						  Background="Transparent" IsVisible="{Binding !SupplyProductEmpty}"
+						  BorderThickness="0" SelectionMode="Single"
+						  HorizontalAlignment="Left"
+						  Name="ProductDataGrid" Margin="0 0 15 0">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="SN" IsReadOnly="True"
+											Binding="{Binding SupplyProductsId}"
+											Width="auto" CanUserResize="False"/>
+
+						<DataGridTextColumn Header="Продукция" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Product.Name}"
+											Width="auto"/>
+
+						<DataGridTextColumn Header="Цена" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Converter={StaticResource ProductPriceConverter}}"
+											Width="auto"/>
+
+						<DataGridTextColumn Header="Цвет" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Product.Color.Name}"
+											Width="auto"/>
+
+						<DataGridTextColumn Header="Ткань" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Textile.Name}"
+											Width="auto"/>
+
+						<DataGridTextColumn Header="Группа/Тип" CanUserResize="False" IsReadOnly="True"
+											Width="auto">
+							<DataGridTextColumn.Binding>
+								<MultiBinding StringFormat="{}{1}/{0}">
+									<Binding Path="Product.ProductType.Name"/>
+									<Binding Path="Product.ProductType.ProductGroup.Name"/>
+								</MultiBinding>
+							</DataGridTextColumn.Binding>
+						</DataGridTextColumn>
+
+						<DataGridTextColumn Header="Габариты" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Product.Dimensions}"
+											Width="auto"/>
+
+						<DataGridTextColumn Header="Статус" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Status}"
+											Width="auto"/>
+
+						<DataGridTextColumn Header="Заказ" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Orders[0].OrderId}"
+											Width="auto"/>
+
+						<DataGridTextColumn Header="Поставка" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Supply.SupplyId}"
+											Width="1*"/>
+					</DataGrid.Columns>
+
+				</DataGrid>
+			</Grid>
+
+		</DockPanel>
+		
+	</Grid>	
+</UserControl>

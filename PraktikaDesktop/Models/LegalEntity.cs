@@ -23,5 +23,5 @@ public partial class LegalEntity
 
     public string Phone { get; set; } = null!;
 
-    public virtual ICollection<Buyer> Buyers { get; set; } = new List<Buyer>();
+    public virtual Buyer? Buyer { get; set; }
 }

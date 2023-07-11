@@ -1,0 +1,337 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 xmlns:material="using:Material.Icons.Avalonia"
+             xmlns:converters="clr-namespace:PraktikaDesktop.Converters"
+             mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="1000"
+			 x:Class="PraktikaDesktop.Views.ProductView" x:Name="productView"
+			 xmlns:vm="using:PraktikaDesktop.ViewModels">
+
+	<UserControl.Resources>
+		<converters:TextLengthConverter x:Key="TextLengthConverter"/>
+	</UserControl.Resources>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<!--All items-->
+			<ColumnDefinition Width="65*"/>
+			<!--Selected item-->
+			<ColumnDefinition  Width="35*"/>
+		</Grid.ColumnDefinitions>
+
+		<!--Main space-->
+		<DockPanel Grid.Row="1" IsEnabled="{Binding !ConfirmationDialogDisplayed}">
+			<!--Header-->
+			<Border Background="{StaticResource primaryBackColor2}" IsEnabled="{Binding !AnimationAction}"
+				    Height="{Binding SortingHeight}" DockPanel.Dock="Top"
+					CornerRadius="10" Margin="0 0 5 0">
+				<ContentControl>
+					<Grid>
+						<Button Background="Transparent" Margin="5 0 0 0"
+								Command="{Binding ExpandSortingCommand}">
+							<PathIcon Height="12"
+									  Width="12"
+									  Data="M1939 486L2029 576L1024 1581L19 576L109 486L1024 1401L1939 486Z"/>
+						</Button>
+
+						<StackPanel Orientation="Vertical" Margin="25 0 0 0">
+							<StackPanel Orientation="Horizontal"
+										VerticalAlignment="Top" Margin="0 5 0 5">
+
+								<TextBox Width="200" Margin="15 0 0 0"
+										 VerticalAlignment="Center" Watermark="Поиск..."
+										 Text="{Binding SearchString, Mode=TwoWay}"/>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSearchCommand}"/>
+
+								<ComboBox Margin="15 0 0 0" PlaceholderText="Цвет..."
+										  Items="{Binding ColorsList}" SelectedItem="{Binding SortSelectedColor}"
+										  VerticalAlignment="Center" Width="175">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSortByColorCommand}"/>
+							</StackPanel>
+
+							<StackPanel Orientation="Horizontal"
+										VerticalAlignment="Top" Margin="0 10 0 5">
+
+								<ComboBox Margin="15 0 0 0" PlaceholderText="Группа..."
+										  Items="{Binding ProductGroups}" SelectedItem="{Binding SortSelectedProductGroup}"
+										  VerticalAlignment="Center" Width="175">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSearchByGroupCommand}"/>
+
+								<ComboBox Margin="15 0 0 0" PlaceholderText="Тип..."
+										  Items="{Binding SortSelectedProductGroup.ProductTypes}" SelectedItem="{Binding SortSelectedProductType}"
+										  VerticalAlignment="Center" Width="175">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Name}"/>
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSearchByTypeCommand}"/>
+							</StackPanel>
+						</StackPanel>
+					</Grid>
+				</ContentControl>
+
+				<Border.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Height" Duration="0:0:0.2"/>
+					</Transitions>
+				</Border.Transitions>
+			</Border>
+
+			<!--List-->
+			<Grid Grid.Row="2" Margin="0 5 5 0" DockPanel.Dock="Bottom">
+
+				<TextBlock Text="Нет записей" IsVisible="{Binding ProductsEmpty}"
+						   FontSize="22" FontWeight="Bold" TextWrapping="Wrap" TextAlignment="Center"
+						   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+				<DataGrid Items="{Binding DisplayedProducts}" AutoGenerateColumns="False"
+						  SelectedItem="{Binding SelectedProduct}"
+						  Background="Transparent" IsVisible="{Binding !ProductsEmpty}"
+						  BorderThickness="0" SelectionMode="Single">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="#" IsReadOnly="True"
+											Binding="{Binding ProductId}"
+											Width="auto" CanUserResize="False"/>
+
+						<DataGridTextColumn Header="Продукция" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Name, Converter={StaticResource TextLengthConverter}}"
+											MinWidth="170"/>
+						
+						<DataGridTextColumn Header="Цена" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Price}"
+											Width="125"/>
+						
+						<DataGridTextColumn Header="Цвет" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Color.Name}"
+											Width="125"/>
+
+						<DataGridTextColumn Header="Группа/Тип" CanUserResize="False" IsReadOnly="True"
+											Width="175">
+							<DataGridTextColumn.Binding>
+								<MultiBinding StringFormat="{}{1}/{0}">
+									<Binding Path="ProductType.Name"/>
+									<Binding Path="ProductType.ProductGroup.Name"/>
+								</MultiBinding>
+							</DataGridTextColumn.Binding>
+						</DataGridTextColumn>
+
+						<DataGridTextColumn Header="Габариты" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Dimensions}"
+											Width="200"/>
+
+						<DataGridTemplateColumn Width="20">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Classes="Icon" Tag="Trash"
+											CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"
+											Command="{Binding ElementName=productView, Path=DataContext.DeleteProductCommand}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Grid>
+		
+		</DockPanel>
+
+		<!--Selected item-->
+		<Border Background="{StaticResource primaryBackColor2}"
+				Grid.Column="1" Grid.RowSpan="2"
+				CornerRadius="10" Margin="5 0 15 0">
+			<Grid>
+				<Grid.RowDefinitions>
+					<!--Header-->
+					<RowDefinition Height="50"/>
+					<!--Details-->
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+
+				<!--Header-->
+				<TextBlock Text="Подробности"
+						   FontSize="22"
+						   FontWeight="Bold"
+						   VerticalAlignment="Center"
+						   Height="30"
+						   Margin="10"/>
+
+				<!--Details-->
+				<Grid Grid.Row="1" Margin="10 0 10 10">
+					<!--Emptiness message-->
+					<TextBlock Text="Выберите продукцию"
+							   FontSize="22" FontWeight="Bold"
+							   VerticalAlignment="Center" HorizontalAlignment="Center"
+							   Height="30" Grid.RowSpan="2"
+							   IsVisible="{Binding !ProductIsSelected}"/>
+
+					<!--Content-->
+					<StackPanel Orientation="Vertical"
+								IsVisible="{Binding	ProductIsSelected}">
+
+						<!--Id-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0 10 0 10">
+							<TextBlock Text="Продукция №: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedProduct.ProductId}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</StackPanel>
+
+						<!--Name-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0 0 0 10">
+							<TextBlock Text="Название: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedProduct.Name}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</StackPanel>
+
+						<!--Date-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0 0 0 10">
+							<TextBlock Text="Цвет: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedProduct.Color.Name}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</StackPanel>
+
+						<!--Group-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0 0 0 10">
+							<TextBlock Text="Группа: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedProduct.ProductType.ProductGroup.Name}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</StackPanel>
+
+						<!--Type-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0 0 0 10">
+							<TextBlock Text="Тип: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedProduct.ProductType.Name}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</StackPanel>
+
+						<!--Price-->
+						<Grid>
+							<StackPanel IsVisible="{Binding !ProductPriceCategorysEmpty}">
+								<TextBlock Text="Ценовые категории:"
+										   Margin="0 0 0 5"
+										   FontSize="18" FontWeight="Bold"/>
+								<DataGrid Items="{Binding SelectedProduct.ProductPriceCategories}" AutoGenerateColumns="False"
+										  Background="Transparent" IsVisible="{Binding	ProductIsSelected}"
+										  BorderThickness="0" Grid.Row="1"
+										  Width="210" HorizontalAlignment="Left">
+
+									<DataGrid.Columns>
+										<DataGridTextColumn Header="Категория" CanUserResize="False" IsReadOnly="True"
+															Binding="{Binding PriceCategory.Category}"
+															Width="auto"/>
+
+										<DataGridTextColumn Header="Цена" CanUserResize="False" IsReadOnly="True"
+															Binding="{Binding Price}"
+															Width="125"/>
+									</DataGrid.Columns>
+								</DataGrid>
+							</StackPanel>
+
+							<StackPanel Orientation="Horizontal" IsVisible="{Binding ProductPriceCategorysEmpty}"
+										Margin="0 0 0 10">
+								<TextBlock Text="Цена: "
+										   FontSize="18" FontWeight="Bold"/>
+
+								<TextBlock Text="{Binding SelectedProduct.Price}"
+										   FontSize="18" TextDecorations="Underline"
+										   VerticalAlignment="Center"/>
+							</StackPanel>
+						</Grid>
+					</StackPanel>
+
+				</Grid>
+
+			</Grid>
+		</Border>
+
+		<!--Add/Edit pannel-->
+		<Border Grid.Column="1" Grid.RowSpan="2"
+				CornerRadius="10 0 0 10" Margin="5 0 0 0">
+
+			<ContentControl HorizontalAlignment="Right"
+							Content="{Binding CurrentChildView}"
+							Width="0">
+
+				<ContentControl.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Width" Duration="0:0:0.4"/>
+					</Transitions>
+				</ContentControl.Transitions>
+
+				<ContentControl.Styles>
+					<Style Selector="ContentControl">
+						<Setter Property="(i:Interaction.Behaviors)">
+							<i:BehaviorCollectionTemplate>
+								<i:BehaviorCollection>
+									<ia:DataTriggerBehavior Binding="{Binding AnimationAction}"
+															Value="true">
+										<ia:ChangePropertyAction TargetObject="$parent"
+																 PropertyName="Width"
+																 Value="{Binding Path=Bounds.Width, RelativeSource={RelativeSource AncestorType=Border}}"/>
+									</ia:DataTriggerBehavior>
+
+									<ia:DataTriggerBehavior Binding="{Binding AnimationAction}"
+															Value="false">
+										<ia:ChangePropertyAction TargetObject="$parent"
+																 PropertyName="Width"
+																 Value="0"/>
+									</ia:DataTriggerBehavior>
+								</i:BehaviorCollection>
+							</i:BehaviorCollectionTemplate>
+						</Setter>
+					</Style>
+				</ContentControl.Styles>
+
+			</ContentControl>
+		</Border>
+		
+	</Grid>
+
+</UserControl>

@@ -1,0 +1,423 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
+			 xmlns:material="using:Material.Icons.Avalonia"
+             xmlns:converters="clr-namespace:PraktikaDesktop.Converters"
+             mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="1000"
+			 x:Class="PraktikaDesktop.Views.OrderView" x:Name="orderView"
+			 xmlns:vm="using:PraktikaDesktop.ViewModels">
+	
+	<UserControl.Resources>
+		<converters:FullNameConverter x:Key="FullNameConverter"/>
+		<converters:TextLengthConverter x:Key="TextLengthConverter"/>
+		<converters:PriceConverter x:Key="PriceConverter"/>
+		<converters:ProductPriceConverter x:Key="ProductPriceConverter"/>
+	</UserControl.Resources>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<!--All items-->
+			<ColumnDefinition Width="65*"/>
+			<!--Selected item-->
+			<ColumnDefinition  Width="35*"/>
+		</Grid.ColumnDefinitions>
+
+		<!--Main space-->
+		<DockPanel Grid.Row="1" IsEnabled="{Binding !ConfirmationDialogDisplayed}">
+			<!--Header-->
+			<Border Background="{StaticResource primaryBackColor2}" IsEnabled="{Binding !AnimationAction}"
+				    Height="{Binding SortingHeight}" DockPanel.Dock="Top"
+					CornerRadius="10" Margin="0 0 5 0">
+				<ContentControl>
+					<Grid>
+						<Button Background="Transparent" Margin="5 0 0 0"
+								Command="{Binding ExpandSortingCommand}">
+							<PathIcon Height="12"
+									  Width="12"
+									  Data="M1939 486L2029 576L1024 1581L19 576L109 486L1024 1401L1939 486Z"/>
+						</Button>
+
+						<StackPanel Orientation="Vertical" Margin="25 0 0 0">
+							<StackPanel Orientation="Horizontal"
+										VerticalAlignment="Top" Margin="0 5 0 5">
+
+								<TextBox Width="200" Margin="15 0 0 0"
+										 VerticalAlignment="Center" Watermark="Поиск..."
+										 Text="{Binding SearchString, Mode=TwoWay}"/>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSearchCommand}"/>
+
+								<CalendarDatePicker Margin="15 0 0 5"
+													VerticalAlignment="Bottom" Watermark="Дата от..."
+													SelectedDate="{Binding SortFirstDate, Mode=TwoWay}"/>
+								<CalendarDatePicker Margin="5 0 0 5"
+													VerticalAlignment="Bottom" Watermark="Дата до..."
+													SelectedDate="{Binding SortSecondDate, Mode=TwoWay}"/>
+
+								<Button Margin="10 0 0 3"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSortByDateCommand}"/>
+							</StackPanel>
+
+							<StackPanel Orientation="Horizontal"
+										VerticalAlignment="Top" Margin="0 5 0 5">
+
+								<ComboBox Margin="15 0 0 0" PlaceholderText="Статус..."
+										  Items="{Binding SortStatusList}" SelectedItem="{Binding SelectedStatus}"
+										  VerticalAlignment="Center" Width="175"/>
+								<Button Margin="10 0 0 0"
+										Classes="Icon" Tag="Close"
+										VerticalAlignment="Center"
+										Command="{Binding ClearSortByStatusCommand}"/>
+							</StackPanel>
+						</StackPanel>
+					</Grid>
+				</ContentControl>
+
+				<Border.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Height" Duration="0:0:0.2"/>
+					</Transitions>
+				</Border.Transitions>
+			</Border>
+
+			<!--List-->
+			<Grid Grid.Row="2" Margin="0 5 5 0" DockPanel.Dock="Bottom">
+
+				<TextBlock Text="Нет записей" IsVisible="{Binding OrdersEmpty}"
+						   FontSize="22" FontWeight="Bold" TextWrapping="Wrap" TextAlignment="Center"
+						   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+				<DataGrid Items="{Binding DisplayedOrders}" AutoGenerateColumns="False"
+						  SelectedItem="{Binding SelectedOrder}"
+						  Background="Transparent" IsVisible="{Binding !OrdersEmpty}"
+						  BorderThickness="0" SelectionMode="Single">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="#" IsReadOnly="True"
+											Binding="{Binding OrderId}"
+											Width="auto" CanUserResize="False"/>
+
+						<DataGridTextColumn Header="Дата" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}"
+											MinWidth="150"/>
+
+						<DataGridTemplateColumn Header="Покупатель" CanUserResize="False" IsReadOnly="True"
+												Width="200">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Grid VerticalAlignment="Center">
+										<TextBlock Text="{Binding Buyer.Individual.FullName, Converter={StaticResource FullNameConverter}}"/>
+										<TextBlock Text="{Binding Buyer.LegalEntity.Organization, Converter={StaticResource TextLengthConverter}}}"/>
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn Header="Телефон" CanUserResize="False" IsReadOnly="True"
+												Width="150">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Grid VerticalAlignment="Center">
+										<TextBlock Text="{Binding Buyer.Individual.Phone}"/>
+										<TextBlock Text="{Binding Buyer.LegalEntity.Phone}"/>
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTextColumn Header="Адрес" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Buyer.Address, Converter={StaticResource TextLengthConverter}}"
+											Width="200"/>
+
+						<DataGridTextColumn Header="Статус" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Status}"
+											Width="125"/>
+
+						<DataGridTextColumn Header="Сумма" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Amount, Converter={StaticResource PriceConverter}}"
+											Width="125"/>
+
+						<DataGridTextColumn Header="Доставка" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Delivery, Converter={StaticResource PriceConverter}}"
+											Width="125"/>
+
+						<DataGridTextColumn Header="Сборка" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Assembly, Converter={StaticResource PriceConverter}}"
+											Width="125"/>
+
+						<DataGridTextColumn Header="Сотрудник" CanUserResize="False" IsReadOnly="True"
+											Binding="{Binding Employee.FullName, Converter={StaticResource FullNameConverter}}"
+											Width="125"/>
+
+						<DataGridTemplateColumn Width="22">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Classes="Icon" Tag="Trash"
+											CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"
+											Command="{Binding ElementName=orderView, Path=DataContext.DeleteOrderCommand}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Grid>
+
+		</DockPanel>
+
+		<!--Selected item-->
+		<Border Background="{StaticResource primaryBackColor2}"
+				Grid.Column="1" Grid.RowSpan="2"
+				CornerRadius="10" Margin="5 0 15 0">
+			<Grid>
+				<Grid.RowDefinitions>
+					<!--Header-->
+					<RowDefinition Height="50"/>
+					<!--Details-->
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+
+				<!--Header-->
+				<TextBlock Text="Подробности"
+						   FontSize="22"
+						   FontWeight="Bold"
+						   VerticalAlignment="Center"
+						   Height="30"
+						   Margin="10"/>
+
+				<!--Details-->
+				<Grid Grid.Row="1" Margin="10 0 10 10">
+					<!--Emptiness message-->
+					<TextBlock Text="Выберите заказ"
+							   FontSize="22" FontWeight="Bold"
+							   VerticalAlignment="Center" HorizontalAlignment="Center"
+							   Height="30" Grid.RowSpan="2"
+							   IsVisible="{Binding !OrderIsSelected}"/>
+
+					<!--Content-->
+					<DockPanel IsVisible="{Binding	OrderIsSelected}"
+							   LastChildFill="False">
+
+						<!--Id-->
+						<DockPanel DockPanel.Dock="Top"
+									Margin="0 10 0 10">
+							<TextBlock Text="Заказ №: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.OrderId}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<!--Date-->
+						<DockPanel DockPanel.Dock="Top"
+									Margin="0 0 0 10">
+							<TextBlock Text="Дата: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.Date, StringFormat={}{0:dd.MM.yyyy}}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<!--Full name \ Organization-->
+						<DockPanel DockPanel.Dock="Top"
+									Margin="0 0 0 10">
+							<TextBlock Text="Покупатель: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.Buyer.Individual.FullName}"
+									   FontSize="18" TextDecorations="Underline" TextWrapping="Wrap"
+									   VerticalAlignment="Center"/>
+							<TextBlock Text="{Binding SelectedOrder.Buyer.LegalEntity.Organization}"
+									   FontSize="18" TextDecorations="Underline" TextWrapping="Wrap"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<!--Phone-->
+						<DockPanel DockPanel.Dock="Top"
+									Margin="0 0 0 10">
+							<TextBlock Text="Телефон: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.Buyer.Individual.Phone}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+							<TextBlock Text="{Binding SelectedOrder.Buyer.LegalEntity.Phone}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<!--Address-->
+						<DockPanel DockPanel.Dock="Top"
+									Margin="0 0 0 10">
+							<TextBlock Text="Адрес: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.Buyer.Address}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<!--Status-->
+						<DockPanel DockPanel.Dock="Top"
+									Margin="0 0 0 10">
+							<TextBlock Text="Статус: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.Status}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<!--Amount-->
+						<DockPanel DockPanel.Dock="Top"
+									Margin="0 0 0 10">
+							<TextBlock Text="Сумма: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.Amount, Converter={StaticResource PriceConverter}}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<!--Delivery-->
+						<DockPanel DockPanel.Dock="Top"
+									Margin="0 0 0 10">
+							<TextBlock Text="Доставка: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.Delivery, Converter={StaticResource PriceConverter}}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<!--Assembly-->
+						<DockPanel DockPanel.Dock="Top"
+									Margin="0 0 0 10">
+							<TextBlock Text="Сборка: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.Assembly, Converter={StaticResource PriceConverter}}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<!--Status-->
+						<DockPanel DockPanel.Dock="Top"
+								   Margin="0 0 0 10">
+							<TextBlock Text="Сотрудник: "
+									   FontSize="18" FontWeight="Bold"/>
+
+							<TextBlock Text="{Binding SelectedOrder.Employee.FullName}"
+									   FontSize="18" TextDecorations="Underline"
+									   VerticalAlignment="Center"/>
+						</DockPanel>
+
+						<StackPanel>
+							<TextBlock Text="Продукция: "
+									   FontSize="18" FontWeight="Bold"/>
+							
+							<DataGrid Items="{Binding SelectedOrder.SupplyProducts}" AutoGenerateColumns="False"
+									  Background="Transparent" IsVisible="{Binding SupplyIsSelected}"
+									  BorderThickness="0" Grid.Row="1">
+
+								<DataGrid.Columns>
+									<DataGridTextColumn Header="SN" IsReadOnly="True"
+														Binding="{Binding SupplyProductsId}"
+														Width="auto" CanUserResize="False"/>
+
+									<DataGridTextColumn Header="Продукция" CanUserResize="False" IsReadOnly="True"
+														Binding="{Binding Product.Name}"
+														MinWidth="175"/>
+
+									<DataGridTextColumn Header="Цена" CanUserResize="False" IsReadOnly="True"
+														Binding="{Binding Converter={StaticResource ProductPriceConverter}}"
+														MinWidth="175"/>
+
+									<DataGridTextColumn Header="Цвет" CanUserResize="False" IsReadOnly="True"
+														Binding="{Binding Product.Color.Name}"
+														Width="100"/>
+
+									<DataGridTextColumn Header="Ткань" CanUserResize="False" IsReadOnly="True"
+														Binding="{Binding Textile.Name}"
+														Width="100"/>
+
+									<DataGridTextColumn Header="Группа/Тип" CanUserResize="False" IsReadOnly="True"
+														Width="155">
+										<DataGridTextColumn.Binding>
+											<MultiBinding StringFormat="{}{1}/{0}">
+												<Binding Path="Product.ProductType.Name"/>
+												<Binding Path="Product.ProductType.ProductGroup.Name"/>
+											</MultiBinding>
+										</DataGridTextColumn.Binding>
+									</DataGridTextColumn>
+
+									<DataGridTextColumn Header="Габариты" CanUserResize="False" IsReadOnly="True"
+														Binding="{Binding Product.Dimensions}"
+														Width="200"/>
+
+									<DataGridTextColumn Header="Поставка" CanUserResize="False" IsReadOnly="True"
+														Binding="{Binding Supply.SupplyId}"
+														Width="auto"/>
+								</DataGrid.Columns>
+							</DataGrid>
+						</StackPanel>
+						
+					</DockPanel>
+
+				</Grid>
+
+			</Grid>
+		</Border>
+
+		<!--Add/Edit pannel-->
+		<Border Grid.Column="1" Grid.RowSpan="2"
+				CornerRadius="10 0 0 10" Margin="5 0 0 0">
+
+			<ContentControl HorizontalAlignment="Right"
+							Content="{Binding CurrentChildView}"
+							Width="0">
+
+				<ContentControl.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Width" Duration="0:0:0.4"/>
+					</Transitions>
+				</ContentControl.Transitions>
+
+				<ContentControl.Styles>
+					<Style Selector="ContentControl">
+						<Setter Property="(i:Interaction.Behaviors)">
+							<i:BehaviorCollectionTemplate>
+								<i:BehaviorCollection>
+									<ia:DataTriggerBehavior Binding="{Binding AnimationAction}"
+															Value="true">
+										<ia:ChangePropertyAction TargetObject="$parent"
+																 PropertyName="Width"
+																 Value="{Binding Path=Bounds.Width, RelativeSource={RelativeSource AncestorType=Border}}"/>
+									</ia:DataTriggerBehavior>
+
+									<ia:DataTriggerBehavior Binding="{Binding AnimationAction}"
+															Value="false">
+										<ia:ChangePropertyAction TargetObject="$parent"
+																 PropertyName="Width"
+																 Value="0"/>
+									</ia:DataTriggerBehavior>
+								</i:BehaviorCollection>
+							</i:BehaviorCollectionTemplate>
+						</Setter>
+					</Style>
+				</ContentControl.Styles>
+
+			</ContentControl>
+		</Border>
+
+	</Grid>
+
+</UserControl>

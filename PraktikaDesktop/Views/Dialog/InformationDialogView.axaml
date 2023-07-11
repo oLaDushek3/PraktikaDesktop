@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+			 MinHeight="150" MaxHeight="200" Width="300"
+             x:Class="PraktikaDesktop.Views.Dialog.InformationDialogView"
+			 Background="Transparent"
+			 xmlns:vm="using:PraktikaDesktop.ViewModels.Dialog">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition/>
+			<RowDefinition Height="80"/>
+		</Grid.RowDefinitions>
+
+		<TextBlock Text="{Binding Message}"
+				   Grid.Row="0"
+				   FontSize="22"
+				   TextWrapping="Wrap"
+				   TextAlignment="Center"
+				   VerticalAlignment="Center"
+				   Margin="0 20 0 0"/>
+
+		<Grid Grid.Row="1">
+			<Button Classes="Rounded" Width="100"
+					Grid.Row="1"
+					Content="Ok"
+					IsDefault="True"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Bottom"
+					Margin="0 0 0 20"
+					Command="{Binding ClickOkCommand}">
+			</Button>
+		</Grid>
+	</Grid>
+	
+</UserControl>

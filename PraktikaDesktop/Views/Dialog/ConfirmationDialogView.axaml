@@ -3,40 +3,45 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"  
-			 Height="150" Width="300"
+			 MinHeight="150" MaxHeight="200" Width="300"
              x:Class="PraktikaDesktop.Views.Dialog.ConfirmationDialogView"
 			 Background="Transparent"
-			 xmlns:vm="using:PraktikaDesktop.ViewModels.Dialog"
-			 d:DataContext="{x:Static vm:BaseDialogViewModel.BaseDialogViewModel}">
-	
+			 xmlns:vm="using:PraktikaDesktop.ViewModels.Dialog">
 	<Grid>
-		<TextBlock Text="Вы уверены?" Grid.Row="0"
-				   FontSize="25"
+		<Grid.RowDefinitions>
+			<RowDefinition/>
+			<RowDefinition Height="80"/>
+		</Grid.RowDefinitions>
+		
+		<TextBlock Text="{Binding Message, StringFormat=Вы уверены? {0}}"
+				   Grid.Row="0"
+				   FontSize="22"
 				   TextWrapping="Wrap"
-				   FontFamily="Montserrat"
 				   TextAlignment="Center"
-				   VerticalAlignment="Top"
-				   Margin="0 30 0 0"/>
+				   VerticalAlignment="Center"
+				   Margin="0 20 0 0"/>
 
-		<Button Classes="Rounded" Width="100" 
-				Grid.Row="1"
-				Content="Нет" 
-				IsDefault="True"
-				HorizontalAlignment="Right"
-				VerticalAlignment="Bottom"
-				Margin="0 0 20 20"
-				Command="{Binding ClickNoCommand}">
-		</Button>
+		<Grid Grid.Row="1">
+			<Button Classes="Rounded" Width="100"
+					Grid.Row="1"
+					Content="Нет"
+					IsDefault="True"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Bottom"
+					Margin="0 0 20 20"
+					Command="{Binding ClickNoCommand}">
+			</Button>
 
-		<Button Grid.Row="1" 
-				Classes="Rounded" Width="100"
-                BorderThickness="0"
-                Content="Да"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Margin="20 0 0 20"
-                Command="{Binding ClickYesCommand}">
-		</Button>
+			<Button Grid.Row="1"
+					Classes="Rounded" Width="100"
+					BorderThickness="0"
+					Content="Да"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					Margin="20 0 0 20"
+					Command="{Binding ClickYesCommand}">
+			</Button>
+		</Grid>
 	</Grid>
 	
 </UserControl>

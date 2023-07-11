@@ -1,10 +1,11 @@
 ﻿using Avalonia.Metadata;
 using PraktikaDesktop.Implementation;
 using PraktikaDesktop.Interface;
+using PraktikaDesktop.Models;
+using PraktikaDesktop.ViewModels.Dialog;
 using ReactiveUI;
 using System;
 using System.Net.Http;
-using System.Reactive;
 using System.Security.Principal;
 using System.Threading;
 
@@ -15,9 +16,10 @@ namespace PraktikaDesktop.ViewModels
         //Fields
         private IWindowService? _windowService;
 
-        private string _login = "";
-        private string _password = "";
+        private string _login = "admin";
+        private string _password = "admin";
         private string? _errorMessage;
+
         //Properties
         public string Login
         {
@@ -43,7 +45,7 @@ namespace PraktikaDesktop.ViewModels
         bool CanLoginCommand(object view)
         {
             bool validData;
-            if (Login == null || Password == null)
+            if (Login.Length == 0 || Password.Length == 0)
                 validData = false;
             else
                 validData = true;
@@ -52,22 +54,27 @@ namespace PraktikaDesktop.ViewModels
         }
         public async void LoginCommand(object view)
         {
-            HttpResponseMessage response = ApiRequest.Get($"Employee/LoginEmployee/{Login}/{Password}");
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity(Login), null);
+                HttpResponseMessage response = ApiRequest.Get($"Employee/LoginEmployee/{Login}/{Password}");
 
-                _windowService = new MainWindowService();
-                _windowService.Show();
+                if (response.IsSuccessStatusCode)
+                {
+                    Thread.CurrentPrincipal = new GenericPrincipal(new GenericIdentity(Login), null);
 
-                _windowService = new LoginWindowService();
-                _windowService.Close(view);
+                    _windowService = new MainWindowService();
+                    _windowService.Show();
 
-
+                    _windowService = new LoginWindowService();
+                    _windowService.Close(view);
+                }
+                else
+                    ErrorMessage = (await response.Content.ReadAsStringAsync()).Trim('"');
             }
-            else
-                ErrorMessage = (await response.Content.ReadAsStringAsync()).Trim('"');
+            catch
+            {
+                ErrorMessage = "Server error";
+            }
         }
     }
 }

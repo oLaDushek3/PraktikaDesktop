@@ -59,10 +59,9 @@
 			<Button Classes="Rounded" 
 					Content="Войти"
 					Margin="0 25" HorizontalAlignment="Center"
-					IsDefault="True"
+					IsDefault="True" 
 					Command="{Binding LoginCommand}"
-					CommandParameter="{Binding ElementName=loginWindow}">
-			</Button>
+					CommandParameter="{Binding ElementName=loginWindow}"/>
 
 		</StackPanel>
 

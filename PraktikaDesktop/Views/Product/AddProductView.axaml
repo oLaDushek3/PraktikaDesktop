@@ -1,0 +1,203 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"             
+             x:Class="PraktikaDesktop.Views.AddProductView" x:Name="addProductView"
+             xmlns:converters="clr-namespace:PrktikaDesktop.Converters"
+			 Name="editSupplyView"
+			 xmlns:sys="using:System"
+			 xmlns:vm="using:PraktikaDesktop.ViewModels">
+
+	<Border Background="{StaticResource primaryBackColor2}"
+			CornerRadius="10 0 0 10">
+		<Grid>
+			<Grid.RowDefinitions>
+				<!--Header-->
+				<RowDefinition Height="50"/>
+				<!--Details-->
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<!--Header-->
+			<TextBlock Text="Создание"
+					   FontSize="22"
+					   FontWeight="Bold"
+					   VerticalAlignment="Center"
+					   Height="30"
+					   Margin="10"/>
+
+			<Button Classes="Icon" Tag="Check"
+					HorizontalAlignment="Right" Margin="0 0 10 0"
+					Command="{Binding ClickSaveCommand}"/>
+
+			<!--Details-->
+			<Grid Grid.Row="1" Margin="10 0 10 10">
+
+				<!--Content-->
+				<DockPanel>
+					<!--Id-->
+					<StackPanel Orientation="Horizontal"
+								Margin="0 10 0 10"
+								DockPanel.Dock="Top">
+						<TextBlock Text="Новая продукция"
+								   FontSize="18" FontWeight="Bold"/>
+					</StackPanel>
+
+					<!--Name-->
+					<StackPanel Orientation="Horizontal"
+								Margin="0 10 0 10"
+								DockPanel.Dock="Top">
+						<TextBlock Text="Название: "
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Watermark="Название..." Text="{Binding	NewProduct.Name, Mode=TwoWay}"
+								 Width="150" Margin="10 0 0 0"/>
+					</StackPanel>
+
+					<!--Color-->
+					<StackPanel Orientation="Horizontal"
+								DockPanel.Dock="Top">
+						<TextBlock Text="Цвет: "
+								   FontSize="18" FontWeight="Bold"/>
+
+						<ComboBox Margin="15 0 0 0" PlaceholderText="Цвет..."
+								  Items="{Binding ColorList}"
+								  SelectedItem="{Binding NewProduct.Color}"
+								  VerticalAlignment="Center" Width="155">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+						<Button Classes="Icon" Tag="Close"
+								HorizontalAlignment="Right" Margin="10 0 10 0"
+								Command="{Binding ClearSelectedColorCommand}"/>
+					</StackPanel>
+
+					<!--Dimensions-->
+					<StackPanel Orientation="Horizontal"
+								Margin="0 10 0 10"
+								DockPanel.Dock="Top">
+						<TextBlock Text="Габариты: "
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Watermark="Габариты..." Text="{Binding	NewProduct.Dimensions, Mode=TwoWay}"
+								 Width="150" Margin="10 0 0 0"/>
+					</StackPanel>
+
+					<!--Group-->
+					<StackPanel Orientation="Horizontal"
+								Margin="0 0 0 10"
+								DockPanel.Dock="Top">
+						<TextBlock Text="Группа: "
+								   FontSize="18" FontWeight="Bold"/>
+
+						<ComboBox Margin="15 0 0 0" PlaceholderText="Группа..."
+								  Items="{Binding ProductGroupList}"
+								  SelectedItem="{Binding SelectedProductGroup}"
+								  VerticalAlignment="Center" Width="155">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</StackPanel>
+
+					<!--Type-->
+					<StackPanel Orientation="Horizontal"
+								Margin="0 0 0 10"
+								DockPanel.Dock="Top">
+						<TextBlock Text="Тип: "
+								   FontSize="18" FontWeight="Bold"/>
+
+						<ComboBox Margin="15 0 0 0" PlaceholderText="Тип..."
+								  Items="{Binding SelectedProductGroup.ProductTypes}"
+								  SelectedItem="{Binding NewProduct.ProductType}"
+								  VerticalAlignment="Center" Width="155">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</StackPanel>
+
+					<!--Price-->
+					<StackPanel Orientation="Horizontal" IsVisible="{Binding ProductPriceCategorysEmpty}"
+								Margin="0 0 0 10"
+								DockPanel.Dock="Top">
+						<RadioButton IsChecked="{Binding !PriceCategoryActive}"/>
+						<TextBlock Text="Цена: "
+								   FontSize="18" FontWeight="Bold"
+								   VerticalAlignment="Center"/>
+
+						<TextBox Text="{Binding Price}"
+								 FontSize="18" Width="100"
+								 Watermark="Цена..."/>
+					</StackPanel>
+					<DockPanel IsVisible="{Binding !ProductPriceCategorysEmpty}">
+						<StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+							<RadioButton IsChecked="{Binding PriceCategoryActive}"/>
+							<TextBlock Text="Ценовые категории:"
+									   FontSize="18" FontWeight="Bold"
+									   VerticalAlignment="Center"/>
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal" Margin="0 0 0 5"
+									DockPanel.Dock="Top">
+							<ComboBox Margin="15 0 0 0" PlaceholderText="Категория..."
+									  Items="{Binding PriceCategoryList}"
+									  SelectedItem="{Binding SelectedPriceCategory}"
+									  VerticalAlignment="Center" Height="32">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding Category}"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+
+							<TextBox Watermark="Цена..." Text="{Binding	PriceCategoryPrice}"
+									 Width="100" Margin="10 0 0 0"/>
+
+							<Button Classes="Icon" Tag="Plus"
+									HorizontalAlignment="Right" Margin="10 0 10 0"
+									Command="{Binding AddProductPriceCategoryCommand}"/>
+						</StackPanel>
+
+						<DataGrid Items="{Binding DisplayedProductPriceCategory}" AutoGenerateColumns="False"
+								  Background="Transparent" IsVisible="{Binding	ProductIsSelected}"
+								  BorderThickness="0" Grid.Row="1"
+								  Width="255" HorizontalAlignment="Left">
+
+							<DataGrid.Columns>
+								<DataGridTextColumn Header="Категория" CanUserResize="False" IsReadOnly="True"
+													Binding="{Binding PriceCategory.Category}"
+													Width="auto"/>
+
+								<DataGridTextColumn Header="Цена" CanUserResize="False" IsReadOnly="True"
+													Binding="{Binding Price}"
+													Width="125"/>
+
+								<DataGridTemplateColumn Width="22">
+									<DataGridTemplateColumn.CellTemplate>
+										<DataTemplate>
+											<Button Classes="Icon" Tag="Trash"
+													CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=DataContext}"
+													Command="{Binding ElementName=addProductView, Path=DataContext.DeleteProductPriceCategoryCommand}"/>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+							</DataGrid.Columns>
+						</DataGrid>
+					</DockPanel>
+				</DockPanel>
+
+			</Grid>
+
+		</Grid>
+	</Border>
+
+</UserControl>

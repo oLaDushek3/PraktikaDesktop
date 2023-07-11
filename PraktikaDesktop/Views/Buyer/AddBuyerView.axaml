@@ -1,0 +1,214 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="650"
+			 x:Class="PraktikaDesktop.Views.AddBuyerView" x:Name="addBuyerView"
+             xmlns:converters="clr-namespace:PrktikaDesktop.Converters"
+			 Name="editSupplyView"
+			 xmlns:sys="using:System"
+			 xmlns:vm="using:PraktikaDesktop.ViewModels">
+
+	<Border Background="{StaticResource primaryBackColor2}"
+		CornerRadius="10 0 0 10">
+
+		<Grid>
+			<Grid.RowDefinitions>
+				<!--Header-->
+				<RowDefinition Height="50"/>
+				<!--Details-->
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<!--Header-->
+
+			<TextBlock Text="Создание"
+					   FontSize="22"
+					   FontWeight="Bold"
+					   VerticalAlignment="Center"
+					   Height="30"
+					   Margin="10"/>
+
+			<Button Classes="Icon" Tag="Check"
+					HorizontalAlignment="Right" Margin="0 0 10 0"
+					Command="{Binding ClickSaveCommand}"/>
+
+			<!--Details-->
+			<Grid Grid.Row="1" Margin="10 0 10 10">
+				
+				<StackPanel Margin="0 0 0 10" VerticalAlignment="Top">
+					<TextBlock Text="Новый покупатель" VerticalAlignment="Center"
+							   FontSize="18" FontWeight="Bold"/>
+
+					<StackPanel Orientation="Horizontal">
+						<RadioButton Content="Физ. лицо" FontSize="16"
+									 Margin="20 0 0 0"
+									 IsChecked="{Binding IndividualSelected}"/>
+
+						<RadioButton Content="Юр. лицо" FontSize="16"
+									 Margin="20 0 0 0"
+									 IsChecked="{Binding LegalEntitySelected}"/>
+					</StackPanel>
+
+				</StackPanel>
+				
+				<DockPanel Margin="0 60 0 0" LastChildFill="False"
+						   IsVisible="{Binding	IndividualSelected}">
+
+					<!--Full name-->
+					<DockPanel DockPanel.Dock="Top"
+							   Margin="0 0 0 10">
+						<TextBlock Text="ФИО: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Text="{Binding NewBuyer.Individual.FullName}"
+								 FontSize="18" Watermark="ФИО..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--Phone-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Телефон: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Text="{Binding NewBuyer.Individual.Phone}"
+								 FontSize="18" Watermark="Телефон..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--Address-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Адрес: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Text="{Binding NewBuyer.Address}"
+								 FontSize="18" Watermark="Адрес..."
+								 Margin="10 0 0 0"
+								 TextWrapping="Wrap"/>
+					</DockPanel>
+
+					<!--Pasport-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Паспорт: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Text="{Binding NewBuyer.Individual.SeriesPassportNumber}"
+								 FontSize="18" Watermark="Паспорт..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+				</DockPanel>
+
+				<DockPanel DockPanel.Dock="Top" Margin="0 60 0 0" LastChildFill="False"
+							IsVisible="{Binding	LegalEntitySelected}">
+
+					<!--Organization-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Организация: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+
+						<TextBox Text="{Binding NewBuyer.LegalEntity.Organization}"
+								 FontSize="18" Watermark="Организация..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--Phone-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Телефон: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+						
+						<TextBox Text="{Binding NewBuyer.LegalEntity.Phone}"
+								 FontSize="18" Watermark="Телефон..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--Address-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Адрес: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+						
+						<TextBox Text="{Binding NewBuyer.Address}"
+								 FontSize="18" Watermark="Адрес..."
+								 MinWidth="150" Margin="10 0 0 0" 
+								 TextWrapping="Wrap"/>
+					</DockPanel>
+
+					<!--CheckingAccount-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">						
+						<TextBlock Text="Расчетный счет: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+						
+						<TextBox Text="{Binding NewBuyer.LegalEntity.CheckingAccount}"
+								 FontSize="18" Watermark="Расч. счет..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--Bank-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Банк: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+						
+						<TextBox Text="{Binding NewBuyer.LegalEntity.Bank}"
+								 FontSize="18" Watermark="Банк..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--CorrespondentAccount-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="Корр. счет: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+						
+						<TextBox Text="{Binding NewBuyer.LegalEntity.CorrespondentAccount}"
+								 FontSize="18" Watermark="Кор. счет..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--BIC-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="БИК: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+						
+						<TextBox Text="{Binding NewBuyer.LegalEntity.Bic}"
+								 FontSize="18" Watermark="БИК..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--RRC-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="КПП: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+						
+						<TextBox Text="{Binding NewBuyer.LegalEntity.Rrc}"
+								 FontSize="18" Watermark="КПП..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+					<!--TIN-->
+					<DockPanel DockPanel.Dock="Top"
+								Margin="0 0 0 10">
+						<TextBlock Text="ИНН: " VerticalAlignment="Center"
+								   FontSize="18" FontWeight="Bold"/>
+						
+						<TextBox Text="{Binding NewBuyer.LegalEntity.Tin}"
+								 FontSize="18" Watermark="ИНН..."
+								 MinWidth="150" Margin="10 0 0 0"/>
+					</DockPanel>
+
+				</DockPanel>
+			</Grid>
+		</Grid>
+		
+	</Border>
+
+</UserControl>

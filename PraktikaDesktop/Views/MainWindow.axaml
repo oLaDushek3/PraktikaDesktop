@@ -64,61 +64,29 @@
 
 				<!--Menu Button-->
 				<RadioButton Classes="Menu" Width="250" IsChecked="True"
-							 Command="{Binding ShowSupplyViewCommand}">
-					<StackPanel Orientation="Horizontal">
-						<material:MaterialIcon Kind="Truck" Height="25" Width="25" Margin="15 0 20 0"/>
-						<TextBlock Text="Поставки" FontSize="18"/>
-					</StackPanel>
-				</RadioButton>
+							 Command="{Binding ShowOrderViewCommand}"
+							 Tag="Package" Content="Заказы"/>
+				
+				<RadioButton Classes="Menu" Width="250"
+							 Command="{Binding ShowSupplyViewCommand}"
+							 Tag="Truck" Content="Поставки"/>
 
 				<RadioButton Classes="Menu" Width="250"
-							 Command="{Binding ShowOrderViewCommand}">
-					<StackPanel Orientation="Horizontal">
-						<material:MaterialIcon Kind="Package" Height="25" Width="25" Margin="15 0 20 0"/>
-						<TextBlock Text="Заказы" FontSize="18"/>
-					</StackPanel>
-				</RadioButton>
+							 Command="{Binding ShowBuyerCommand}"
+							 Tag="AccountMultiple" Content="Покупатели"/>
 
 				<RadioButton Classes="Menu" Width="250"
-							 Command="{Binding ShowBuyerCommand}">
-					<StackPanel Orientation="Horizontal">
-						<material:MaterialIcon Kind="AccountMultiple" Height="25" Width="25" Margin="15 0 20 0"/>
-						<TextBlock Text="Покупатели" FontSize="18"/>
-					</StackPanel>
-				</RadioButton>
+							 Command="{Binding ShowProductViewCommand}"
+							 Tag="PackageVariantClosed" Content="Продукция"/>
 
 				<RadioButton Classes="Menu" Width="250"
-							 Command="{Binding ShowProductViewCommand}">
-					<StackPanel Orientation="Horizontal">
-						<material:MaterialIcon Kind="PackageVariantClosed" Height="25" Width="25" Margin="15 0 20 0"/>
-						<TextBlock Text="Продукция" FontSize="18"/>
-					</StackPanel>
-				</RadioButton>
+							 Command="{Binding ShowSalesAndRemainsViewCommand}"
+							 Tag="PercentBox" Content="Остатки"/>
 
 				<RadioButton Classes="Menu" Width="250"
-							 Command="{Binding ShowTextileViewCommand}">
-					<StackPanel Orientation="Horizontal">
-						<material:MaterialIcon Kind="PaletteSwatch" Height="25" Width="25" Margin="15 0 20 0"/>
-						<TextBlock Text="Ткани" FontSize="18"/>
-					</StackPanel>
-				</RadioButton>
-
-				<RadioButton Classes="Menu" Width="250"
-							 Command="{Binding ShowColorViewCommand}">
-					<StackPanel Orientation="Horizontal">
-						<material:MaterialIcon Kind="Palette" Height="25" Width="25" Margin="15 0 20 0"/>
-						<TextBlock Text="Цвета" FontSize="18"/>
-					</StackPanel>
-				</RadioButton>
-
-
-				<RadioButton Classes="Menu" Width="250"
-							 Command="{Binding ShowEmployeeViewCommand}">
-					<StackPanel Orientation="Horizontal">
-						<material:MaterialIcon Kind="User" Height="25" Width="25" Margin="15 0 20 0"/>
-						<TextBlock Text="Сотрудники" FontSize="18"/>
-					</StackPanel>
-				</RadioButton>
+							 Command="{Binding ShowEmployeeViewCommand}"
+							 Tag="User" Content="Сотрудники"
+							 IsVisible="{Binding Admin}"/>
 
 			</StackPanel>
 
@@ -148,31 +116,22 @@
 					<material:MaterialIcon Kind="{Binding Icon}" Height="25" Width="25" 
 										   Margin="25 0 10 0"/>
 					<TextBlock Text="{Binding Caption}"
-							   FontSize="18"
-							   FontFamily="Montserrat"
-							   FontWeight="Medium"
+							   FontSize="20"
+							   FontWeight="Bold"
 							   VerticalAlignment="Center"/>
 
-					<Button Margin="10 0 0 0" Classes="Icon"
-							Tag="{StaticResource color1}" Cursor="Hand">
-						<Button.Content>
-							<material:MaterialIcon Kind="Pencil" Height="20" Width="20"/>
-						</Button.Content>
-					</Button>
+					<Button Margin="10 0 0 0" 
+							Classes="Icon" Tag="Pencil"
+							Command="{Binding CurrentChildView.EditCommand}"/>
 
-					<Button Classes="Icon"
-							Tag="{StaticResource color1}" Cursor="Hand">
-						<Button.Content>
-							<material:MaterialIcon Kind="Plus"  Height="25" Width="25"/>
-						</Button.Content>
-					</Button>
+					<Button Classes="Icon" Tag="Plus"
+							Command="{Binding CurrentChildView.AddCommand}"/>
 
-					<Button Classes="Icon"  Margin="10 0 0 0" 
-							Tag="{StaticResource color1}" Cursor="Hand">
-						<Button.Content>
-							<material:MaterialIcon Kind="ArrowLeft" Height="20" Width="20"/>
-						</Button.Content>
-					</Button>
+					<Button Margin="10 0 0 0"
+							Classes="Icon" Tag="ArrowLeft"
+							IsVisible="{Binding CurrentChildView.AnimationAction}"
+							Command="{Binding CurrentChildView.GoBackCommand}"
+							CommandParameter="true"/>
 
 				</StackPanel>
 
@@ -184,11 +143,10 @@
 									  ReverseOrder="True">
 
 
-					<Button Classes="Icon" Margin="10 0 0 0"
+					<Button Classes="Icon" Tag="ExitToApp"
+							Margin="10 0 0 0"
 							Command="{Binding ExecuteLogoutCommand}"
-							CommandParameter="{Binding ElementName=mainWindow}">
-						<material:MaterialIcon Kind="ExitToApp"  Height="25" Width="25"/>
-					</Button>
+							CommandParameter="{Binding ElementName=mainWindow}"/>
 
 					<TextBlock Text="{Binding LoginEmployee.Login}"
 							   FontSize="18"
@@ -204,17 +162,22 @@
 					   Opacity="0.15"
 					   Height="400"/>
 				<ContentControl Content="{Binding CurrentChildView}"
-								Margin="15"/>
+								Margin="15 0 0 15"/>
 			</Grid>
 
 		</Grid>
-		<!--Dimming effect-->
-		<Rectangle Fill="Black" Grid.ColumnSpan="2" Opacity="0.4"
-				   IsVisible="{Binding DimmingEffectEnable}"/>
 
-		<StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center">
-			<ContentControl Content="{Binding DialogView}"/>
-		</StackPanel>
+		<!--Dialog-->
+		<Grid IsVisible="{Binding DimmingEffectEnable}"  Grid.ColumnSpan="2">
+			<!--Dimming effect-->
+			<Rectangle Fill="Black" Opacity="0.4"/>
+
+			<!--Dialog-->
+			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+				<ContentControl Content="{Binding DialogView}"/>
+			</StackPanel>
+		</Grid>
+
 	</Grid>
 
 </Window>
